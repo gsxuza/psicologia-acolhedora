@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-sand-100 text-ink-700 antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-ink-800;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme("colors.mist.400");
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .card-soft {
+    @apply bg-white rounded-xl2 shadow-softer border border-sand-200;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-sage-500 px-4 py-2.5
+      text-sm font-medium text-white shadow-softer transition-colors duration-200
+      hover:bg-sage-600 focus-visible:outline-none active:bg-sage-700 disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-sage-200 bg-white px-4 py-2.5
+      text-sm font-medium text-sage-700 transition-colors duration-200
+      hover:bg-sage-50 disabled:opacity-50;
+  }
+
+  .input-field {
+    @apply w-full rounded-lg border border-sand-300 bg-white px-3.5 py-2.5 text-sm text-ink-700
+      placeholder:text-ink-700/40 transition-shadow duration-150
+      focus:border-mist-300 focus:ring-2 focus:ring-mist-200;
+  }
+
+  .label-field {
+    @apply mb-1.5 block text-sm font-medium text-ink-700/80;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
