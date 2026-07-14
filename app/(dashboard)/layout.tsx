@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { ADMIN_EMAIL } from "@/lib/config";
 
 // Segunda camada de proteção (além do middleware): garante que nenhum
-// Server Component do painel renderize dados sem uma sessão válida.
+// Server Component do painel renderize dados sem uma sessão válida — e que
+// só a conta da psicóloga (ADMIN_EMAIL) acesse esta área de gestão.
 export default async function DashboardLayout({
   children,
 }: {
@@ -16,6 +18,10 @@ export default async function DashboardLayout({
 
   if (!user) {
     redirect("/login");
+  }
+
+  if (user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    redirect("/portal");
   }
 
   return (

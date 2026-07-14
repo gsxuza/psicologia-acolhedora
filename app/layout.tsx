@@ -15,9 +15,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Psicologia Acolhedora | Gestão do consultório",
+  title: "Gabriela Silva | Psicóloga Clínica",
   description:
-    "Plataforma de gestão para psicólogas e psicólogos: pacientes, sessões e documentos em um só lugar, com privacidade em primeiro lugar.",
+    "Atendimento psicológico acolhedor com Gabriela Silva, psicóloga clínica (CRP 06/175907). Sessões online e presenciais.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

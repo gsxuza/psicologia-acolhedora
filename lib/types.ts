@@ -73,3 +73,13 @@ export interface Profile {
   role: AppRole;
   created_at: string;
 }
+
+export interface MoodCheckin {
+  id: string;
+  patient_id: string;
+  user_id: string;
+  owner_id: string;
+  mood: number; // 1-5
+  note: string | null;
+  created_at: string;
+}

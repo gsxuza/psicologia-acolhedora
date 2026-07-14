@@ -8,55 +8,57 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Paleta "acolhedora": salvia (calma/confiança), azul-bruma (serenidade),
-        // rosa-poeira (acolhimento) e neutros quentes. Evita o cliché
-        // creme+serifa+terracota: aqui o acento é o rosa-poeira, não terracota.
+        // Paleta da marca Gabriela Silva: verde-petróleo (autoridade clínica,
+        // vem do logotipo) + rosa suave (acolhimento, vem do cartão) + neutros
+        // quentes. Os nomes dos tokens (sage/mist/dusk/sand/ink) foram
+        // mantidos da versão anterior para não exigir refatorar todos os
+        // componentes — apenas os valores hex mudaram para a nova marca.
         sage: {
-          50: "#F3F6F3",
-          100: "#E4EBE3",
-          200: "#C7D6C4",
-          300: "#A3BD9E",
-          400: "#82A47B",
-          500: "#658A5D", // primária
-          600: "#516F4A",
-          700: "#42583C",
-          800: "#374832",
-          900: "#2E3C2A",
+          50: "#EFF6F5",
+          100: "#DCEEEB",
+          200: "#B7DCD5",
+          300: "#8CC5BA",
+          400: "#5EA89B",
+          500: "#217F73", // primária (verde-petróleo do logo)
+          600: "#1A6459",
+          700: "#17544B",
+          800: "#14453D",
+          900: "#103732",
         },
         mist: {
-          50: "#F2F7FA",
-          100: "#E2EEF3",
-          200: "#C4DDE7",
-          300: "#9FC5D5",
-          400: "#78A9BF", // secundária
-          500: "#5A8CA4",
-          600: "#48708A",
-          700: "#3C5B70",
-          800: "#324A5B",
-          900: "#2A3D4B",
+          50: "#F1F8F7",
+          100: "#DFF0EE",
+          200: "#BFE1DD",
+          300: "#96CDC6",
+          400: "#6BB6AC", // secundária (verde-água mais claro)
+          500: "#4C9A90",
+          600: "#3D7D75",
+          700: "#33665F",
+          800: "#2A534E",
+          900: "#234441",
         },
         dusk: {
-          50: "#FBF3F2",
-          100: "#F5E1DE",
-          200: "#EAC1BC",
-          300: "#DA9C95", // acento (rosa-poeira, acolhimento)
-          400: "#C87E75",
-          500: "#B0645B",
-          600: "#8F4F48",
-          700: "#733F3A",
-          800: "#5F3531",
-          900: "#4F2D2A",
+          50: "#FDF3F3",
+          100: "#FAE3E3",
+          200: "#F3C7C8", // rosa do cartão (fundo/acento suave)
+          300: "#E9A6A9",
+          400: "#DD8489", // acento (rosa acolhedora)
+          500: "#C96872",
+          600: "#A8535C",
+          700: "#86424A",
+          800: "#6B363C",
+          900: "#572D32",
         },
         sand: {
-          50: "#FBFAF7",
-          100: "#F7F4EE", // fundo principal
-          200: "#EFEAE0",
-          300: "#E2DAC9",
+          50: "#FAFAF8",
+          100: "#F5F4F0", // fundo principal
+          200: "#EDEBE4",
+          300: "#E0DCD1",
         },
         ink: {
-          700: "#33413D", // texto principal
-          800: "#293530",
-          900: "#1F2823",
+          700: "#2E3A38", // texto principal
+          800: "#24302E",
+          900: "#1C2624",
         },
       },
       fontFamily: {

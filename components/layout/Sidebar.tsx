@@ -23,8 +23,8 @@ export function Sidebar() {
           <Leaf className="relative h-4.5 w-4.5 text-sage-600" size={18} />
         </span>
         <div className="leading-tight">
-          <p className="font-display text-sm font-semibold text-ink-800">Acolhedora</p>
-          <p className="text-[11px] text-ink-700/50">gestão do consultório</p>
+          <p className="font-display text-sm font-semibold text-ink-800">Gabriela Silva</p>
+          <p className="text-[11px] text-ink-700/50">painel da psicóloga</p>
         </div>
       </div>
 

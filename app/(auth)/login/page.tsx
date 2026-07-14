@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
+import { ADMIN_EMAIL } from "@/lib/config";
 
 export default function LoginPage() {
   return (
@@ -30,7 +31,7 @@ function LoginForm() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error, data } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setError("E-mail ou senha incorretos. Verifique e tente novamente.");
@@ -38,7 +39,9 @@ function LoginForm() {
       return;
     }
 
-    const redirectTo = searchParams.get("redirectedFrom") || "/dashboard";
+    const isAdmin = data.user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    const fallback = isAdmin ? "/dashboard" : "/portal";
+    const redirectTo = searchParams.get("redirectedFrom") || fallback;
     router.push(redirectTo);
     router.refresh();
   }

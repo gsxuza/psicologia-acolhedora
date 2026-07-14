@@ -7,7 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * nenhuma página de /dashboard, /pacientes, /sessoes ou /documentos é
  * renderizada sem uma sessão Supabase válida.
  */
-const PROTECTED_PREFIXES = ["/dashboard", "/pacientes", "/sessoes", "/documentos"];
+const PROTECTED_PREFIXES = ["/dashboard", "/pacientes", "/sessoes", "/documentos", "/portal"];
 const AUTH_PREFIXES = ["/login", "/registro"];
 
 export async function updateSession(request: NextRequest) {

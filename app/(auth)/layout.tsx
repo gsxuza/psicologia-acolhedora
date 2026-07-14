@@ -1,4 +1,4 @@
-import { Leaf } from "lucide-react";
+import { BrandMark } from "@/components/landing/LandingHeader";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +10,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-mist-200/50 blur-3xl animate-breathe"
+        className="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-dusk-200/50 blur-3xl animate-breathe"
         style={{ animationDelay: "2s" }}
       />
 
@@ -18,13 +18,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="mb-8 flex flex-col items-center text-center">
           <span className="relative mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-sage-100">
             <span className="absolute h-12 w-12 rounded-2xl bg-sage-200 animate-breathe" />
-            <Leaf className="relative text-sage-600" size={22} />
+            <BrandMark size={26} />
           </span>
           <h1 className="font-display text-2xl font-semibold text-ink-800">
-            Psicologia Acolhedora
+            Gabriela Silva
           </h1>
           <p className="mt-1 text-sm text-ink-700/60">
-            Um espaço organizado para cuidar de quem cuida.
+            Acesse sua área pessoal.
           </p>
         </div>
 
