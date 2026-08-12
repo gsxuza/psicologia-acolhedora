@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { createClient } from "@/lib/supabase/client";
+import { createSession } from "@/app/actions/sessions";
 import type { Patient } from "@/lib/types";
 
 const sessionSchema = z.object({
@@ -29,8 +29,8 @@ export function SessionForm({
   onCreated?: () => void;
 }) {
   const router = useRouter();
-  const supabase = createClient();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
@@ -45,30 +45,30 @@ export function SessionForm({
   async function onSubmit(values: SessionFormValues) {
     setServerError(null);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
     const patient = patients.find((p) => p.id === values.patient_id);
     if (!patient) return;
 
-    const { error } = await supabase.from("sessions").insert({
-      ...values,
-      patient_name: patient.full_name,
-      payment_value: values.payment_value ?? patient.session_value ?? null,
-      created_by: user.id,
+    startTransition(async () => {
+      try {
+        await createSession({
+          patient_id: values.patient_id,
+          patient_name: patient.full_name,
+          date: values.date,
+          time: values.time,
+          duration: values.duration,
+          modality: values.modality,
+          payment_value: values.payment_value ?? patient.session_value ?? null,
+        });
+        reset();
+        router.refresh();
+        onCreated?.();
+      } catch {
+        setServerError("Não foi possível agendar. Tente novamente.");
+      }
     });
-
-    if (error) {
-      setServerError("Não foi possível agendar. Tente novamente.");
-      return;
-    }
-
-    reset();
-    router.refresh();
-    onCreated?.();
   }
+
+  const loading = isSubmitting || isPending;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -109,8 +109,8 @@ export function SessionForm({
       )}
 
       <div className="flex justify-end sm:col-span-2">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Agendando..." : "Agendar sessão"}
+        <Button type="submit" disabled={loading}>
+          {loading ? "Agendando..." : "Agendar sessão"}
         </Button>
       </div>
     </form>

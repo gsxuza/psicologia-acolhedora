@@ -1,26 +1,24 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { sql } from "@/lib/db";
 import { Header } from "@/components/layout/Header";
 import { PatientCard } from "@/components/patients/PatientCard";
 import type { Patient } from "@/lib/types";
 
 export default async function PatientsPage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
+  const user = await currentUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
 
-  const { data: patients } = await supabase
-    .from("patients")
-    .select("*")
-    .order("full_name", { ascending: true });
-
-  const list = (patients ?? []) as Patient[];
+  const rows = await sql`
+    SELECT * FROM patients WHERE created_by = ${userId} ORDER BY full_name ASC
+  `;
+  const list = rows as Patient[];
 
   return (
     <>
-      <Header title="Pacientes" subtitle={`${list.length} no total`} userEmail={user?.email} />
+      <Header title="Pacientes" subtitle={`${list.length} no total`} userEmail={userEmail} />
 
       <main className="flex-1 p-6">
         <div className="mb-4 flex justify-end">

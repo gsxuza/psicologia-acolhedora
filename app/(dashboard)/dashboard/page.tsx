@@ -1,5 +1,6 @@
 import { Users, CalendarCheck, CalendarClock, Wallet } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { sql } from "@/lib/db";
 import { Header } from "@/components/layout/Header";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { UpcomingSessions } from "@/components/dashboard/UpcomingSessions";
@@ -7,31 +8,21 @@ import { formatCurrency } from "@/lib/utils";
 import type { Session } from "@/lib/types";
 
 export default async function DashboardPage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
+  const user = await currentUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
 
   const today = new Date().toISOString().slice(0, 10);
 
-  const [{ count: activePatients }, { data: todaySessions }, { data: pendingPayments }] =
-    await Promise.all([
-      supabase
-        .from("patients")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "active"),
-      supabase
-        .from("sessions")
-        .select("*")
-        .gte("date", today)
-        .order("date", { ascending: true })
-        .order("time", { ascending: true })
-        .limit(6),
-      supabase.from("sessions").select("payment_value").eq("payment_status", "pending"),
-    ]);
+  const [activePatientsRows, todaySessionsRows, pendingPaymentsRows] = await Promise.all([
+    sql`SELECT COUNT(*)::int AS count FROM patients WHERE status = 'active' AND created_by = ${userId}`,
+    sql`SELECT * FROM sessions WHERE date >= ${today} AND created_by = ${userId} ORDER BY date ASC, time ASC LIMIT 6`,
+    sql`SELECT payment_value FROM sessions WHERE payment_status = 'pending' AND created_by = ${userId}`,
+  ]);
 
-  const sessions = (todaySessions ?? []) as Session[];
-  const pendingTotal = (pendingPayments ?? []).reduce(
+  const activePatients = activePatientsRows[0]?.count ?? 0;
+  const sessions = todaySessionsRows as Session[];
+  const pendingTotal = (pendingPaymentsRows as { payment_value: number | null }[]).reduce(
     (sum, s) => sum + (s.payment_value ?? 0),
     0
   );
@@ -42,12 +33,12 @@ export default async function DashboardPage() {
       <Header
         title="Painel"
         subtitle="Um resumo tranquilo do seu consultório hoje"
-        userEmail={user?.email}
+        userEmail={userEmail}
       />
 
       <main className="flex-1 space-y-6 p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Pacientes ativos" value={activePatients ?? 0} icon={Users} tone="sage" />
+          <StatCard label="Pacientes ativos" value={activePatients} icon={Users} tone="sage" />
           <StatCard
             label="Próximas sessões"
             value={sessions.length}

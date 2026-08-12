@@ -1,27 +1,27 @@
-import { createClient } from "@/lib/supabase/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { sql } from "@/lib/db";
 import { Header } from "@/components/layout/Header";
 import { DocumentUploadForm } from "@/components/documents/DocumentUploadForm";
 import { DocumentCard } from "@/components/documents/DocumentCard";
 import type { Patient, PatientDocument } from "@/lib/types";
 
 export default async function DocumentsPage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
+  const user = await currentUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
 
-  const [{ data: documents }, { data: patients }] = await Promise.all([
-    supabase.from("documents").select("*").order("created_at", { ascending: false }),
-    supabase.from("patients").select("*").order("full_name"),
+  const [documentRows, patientRows] = await Promise.all([
+    sql`SELECT * FROM documents WHERE created_by = ${userId} ORDER BY created_at DESC`,
+    sql`SELECT * FROM patients WHERE created_by = ${userId} ORDER BY full_name ASC`,
   ]);
 
-  const list = (documents ?? []) as PatientDocument[];
+  const list = documentRows as PatientDocument[];
 
   return (
     <>
-      <Header title="Documentos" subtitle="Materiais, orientações e contratos" userEmail={user?.email} />
+      <Header title="Documentos" subtitle="Materiais, orientações e contratos" userEmail={userEmail} />
       <main className="flex-1 space-y-4 p-6">
-        <DocumentUploadForm patients={(patients ?? []) as Patient[]} />
+        <DocumentUploadForm patients={patientRows as Patient[]} />
 
         {list.length === 0 ? (
           <div className="card-soft flex flex-col items-center gap-2 p-12 text-center">
