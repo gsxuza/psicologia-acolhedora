@@ -1,22 +1,18 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Leaf, Gauge } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { ADMIN_EMAIL } from "@/lib/config";
 import { PortalSignOutButton } from "@/components/portal/PortalSignOutButton";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
+  if (!userId) redirect("/login");
 
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await currentUser();
+  const email = user?.primaryEmailAddress?.emailAddress;
 
-  // A conta da psicóloga usa o painel de gestão, não a área do paciente.
-  if (user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+  if (email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
     redirect("/dashboard");
   }
 

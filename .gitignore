@@ -8,3 +8,6 @@ out
 *.pem
 npm-debug.log*
 .vercel
+.claude/
+screenshot.js
+screenshot2.js

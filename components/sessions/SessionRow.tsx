@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { Video, MapPin } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { updateSessionField } from "@/app/actions/sessions";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { PaymentStatus, Session, SessionStatus } from "@/lib/types";
 
@@ -21,12 +22,14 @@ const PAYMENT_OPTIONS: { value: PaymentStatus; label: string }[] = [
 ];
 
 export function SessionRow({ session }: { session: Session }) {
-  const supabase = createClient();
   const router = useRouter();
+  const [, startTransition] = useTransition();
 
   async function updateField(field: "status" | "payment_status", value: string) {
-    await supabase.from("sessions").update({ [field]: value }).eq("id", session.id);
-    router.refresh();
+    startTransition(async () => {
+      await updateSessionField(session.id, field, value);
+      router.refresh();
+    });
   }
 
   return (

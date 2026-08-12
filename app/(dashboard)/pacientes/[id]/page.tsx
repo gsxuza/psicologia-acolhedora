@@ -1,31 +1,27 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Pencil, Cake, Phone, Mail, ShieldAlert, FileText, CalendarDays } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
+import { sql } from "@/lib/db";
 import { Header } from "@/components/layout/Header";
 import { Badge, patientStatusLabel, patientStatusTone, sessionStatusLabel, sessionStatusTone } from "@/components/ui/Badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { Patient, PatientDocument, Session } from "@/lib/types";
 
 export default async function PatientDetailPage({ params }: { params: { id: string } }) {
-  const supabase = createClient();
+  const { userId } = await auth();
 
-  const [{ data: patient }, { data: sessions }, { data: documents }] = await Promise.all([
-    supabase.from("patients").select("*").eq("id", params.id).single(),
-    supabase
-      .from("sessions")
-      .select("*")
-      .eq("patient_id", params.id)
-      .order("date", { ascending: false })
-      .limit(10),
-    supabase.from("documents").select("*").eq("patient_id", params.id),
+  const [patientRows, sessionRows, documentRows] = await Promise.all([
+    sql`SELECT * FROM patients WHERE id = ${params.id} AND created_by = ${userId} LIMIT 1`,
+    sql`SELECT * FROM sessions WHERE patient_id = ${params.id} ORDER BY date DESC LIMIT 10`,
+    sql`SELECT * FROM documents WHERE patient_id = ${params.id}`,
   ]);
 
-  if (!patient) notFound();
+  if (!patientRows[0]) notFound();
 
-  const p = patient as Patient;
-  const sessionList = (sessions ?? []) as Session[];
-  const documentList = (documents ?? []) as PatientDocument[];
+  const p = patientRows[0] as Patient;
+  const sessionList = sessionRows as Session[];
+  const documentList = documentRows as PatientDocument[];
 
   return (
     <>

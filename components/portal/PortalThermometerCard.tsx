@@ -1,8 +1,9 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { EmotionalThermometer } from "@/components/thermometer/EmotionalThermometer";
-import { createClient } from "@/lib/supabase/client";
+import { createMoodCheckin } from "@/app/actions/mood";
 
 export function PortalThermometerCard({
   patientId,
@@ -13,17 +14,14 @@ export function PortalThermometerCard({
   ownerId: string;
   userId: string;
 }) {
-  const supabase = createClient();
   const router = useRouter();
+  const [, startTransition] = useTransition();
 
   async function handleCheckIn(mood: number) {
-    await supabase.from("mood_checkins").insert({
-      patient_id: patientId,
-      user_id: userId,
-      owner_id: ownerId,
-      mood,
+    startTransition(async () => {
+      await createMoodCheckin({ patientId, ownerId, mood });
+      router.refresh();
     });
-    router.refresh();
   }
 
   return <EmotionalThermometer onCheckIn={handleCheckIn} />;

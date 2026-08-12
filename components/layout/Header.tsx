@@ -1,8 +1,8 @@
 "use client";
 
+import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { initials } from "@/lib/utils";
 
 export function Header({
@@ -14,13 +14,12 @@ export function Header({
   subtitle?: string;
   userEmail?: string | null;
 }) {
+  const { signOut } = useClerk();
   const router = useRouter();
-  const supabase = createClient();
 
   async function handleSignOut() {
-    await supabase.auth.signOut();
+    await signOut();
     router.push("/login");
-    router.refresh();
   }
 
   return (

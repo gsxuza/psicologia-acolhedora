@@ -1,22 +1,18 @@
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
+import { sql } from "@/lib/db";
 import { MoodHistoryChart } from "@/components/portal/MoodHistoryChart";
 import { MOOD_LEVELS } from "@/components/thermometer/EmotionalThermometer";
 import { formatDate } from "@/lib/utils";
 import type { MoodCheckin, Patient } from "@/lib/types";
 
 export default async function ThermometerHistoryPage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
 
-  const { data: patient } = await supabase
-    .from("patients")
-    .select("*")
-    .eq("user_id", user!.id)
-    .maybeSingle();
+  const patientRows = await sql`
+    SELECT * FROM patients WHERE user_id = ${userId} LIMIT 1
+  `;
 
-  if (!patient) {
+  if (!patientRows[0]) {
     return (
       <p className="card-soft p-6 text-sm text-ink-700/60">
         Sua conta ainda não está vinculada a um cadastro de paciente.
@@ -24,16 +20,16 @@ export default async function ThermometerHistoryPage() {
     );
   }
 
-  const p = patient as Patient;
+  const p = patientRows[0] as Patient;
 
-  const { data: checkins } = await supabase
-    .from("mood_checkins")
-    .select("*")
-    .eq("patient_id", p.id)
-    .order("created_at", { ascending: false })
-    .limit(30);
+  const checkinRows = await sql`
+    SELECT * FROM mood_checkins
+    WHERE patient_id = ${p.id}
+    ORDER BY created_at DESC
+    LIMIT 30
+  `;
 
-  const list = (checkins ?? []) as MoodCheckin[];
+  const list = checkinRows as MoodCheckin[];
 
   return (
     <div className="space-y-6">

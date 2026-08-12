@@ -1,17 +1,16 @@
 "use client";
 
+import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 export function PortalSignOutButton() {
+  const { signOut } = useClerk();
   const router = useRouter();
-  const supabase = createClient();
 
   async function handleSignOut() {
-    await supabase.auth.signOut();
+    await signOut();
     router.push("/login");
-    router.refresh();
   }
 
   return (

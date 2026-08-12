@@ -8,8 +8,9 @@ export interface MoodLevel {
   value: number; // 1-5
   label: string;
   message: string;
-  color: string; // tailwind bg class for the thumb/track fill
-  glow: string; // tailwind bg class (soft) for the message card background
+  color: string;  // tailwind bg class para o thumb
+  glow: string;   // tailwind bg class para o card de mensagem
+  hex: string;    // hex puro para animação inline
 }
 
 export const MOOD_LEVELS: MoodLevel[] = [
@@ -20,6 +21,7 @@ export const MOOD_LEVELS: MoodLevel[] = [
       "Está tudo bem não estar bem. Respire fundo — você não precisa carregar isso sozinho(a).",
     color: "bg-mist-500",
     glow: "bg-mist-50",
+    hex: "#4C9A90",
   },
   {
     value: 2,
@@ -28,6 +30,7 @@ export const MOOD_LEVELS: MoodLevel[] = [
       "Dias assim pesam mais. Seja gentil com você e, se puder, converse com alguém de confiança hoje.",
     color: "bg-mist-400",
     glow: "bg-mist-50",
+    hex: "#6BB6AC",
   },
   {
     value: 3,
@@ -36,6 +39,7 @@ export const MOOD_LEVELS: MoodLevel[] = [
       "Nem tudo precisa ter um rótulo forte. Um momento de pausa também é válido.",
     color: "bg-sand-300",
     glow: "bg-sand-100",
+    hex: "#C9BE9D",
   },
   {
     value: 4,
@@ -44,6 +48,7 @@ export const MOOD_LEVELS: MoodLevel[] = [
       "Que bom sentir isso. Vale anotar o que ajudou a chegar até aqui hoje.",
     color: "bg-sage-400",
     glow: "bg-sage-50",
+    hex: "#5EA89B",
   },
   {
     value: 5,
@@ -52,6 +57,7 @@ export const MOOD_LEVELS: MoodLevel[] = [
       "Aproveite esse momento — reconhecer o que está bem também é parte do cuidado com você.",
     color: "bg-dusk-400",
     glow: "bg-dusk-50",
+    hex: "#DD8489",
   },
 ];
 
@@ -74,7 +80,7 @@ export function EmotionalThermometer({
   }
 
   return (
-    <div className={cn("card-soft p-6", compact ? "p-5" : "p-6 sm:p-8")}>
+    <div className={cn("card-soft", compact ? "p-5" : "p-6 sm:p-8")}>
       <p className="mb-1 font-display text-lg font-semibold text-ink-800">
         Como você está se sentindo agora?
       </p>
@@ -84,6 +90,17 @@ export function EmotionalThermometer({
 
       {/* Trilha do termômetro */}
       <div className="relative mb-3 h-3 w-full rounded-full bg-gradient-to-r from-mist-300 via-sand-300 to-dusk-300">
+        {/* Faixa de progresso animada */}
+        <motion.div
+          className="pointer-events-none absolute inset-y-0 left-0 rounded-full opacity-50"
+          animate={{
+            width: `${percent}%`,
+            backgroundColor: current.hex,
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 28 }}
+        />
+
+        {/* Input range invisível para interação */}
         <input
           type="range"
           min={1}
@@ -93,13 +110,18 @@ export function EmotionalThermometer({
           onChange={(e) => setValue(Number(e.target.value))}
           aria-label="Selecione seu estado emocional"
           className="absolute inset-0 h-3 w-full cursor-pointer opacity-0"
+          style={{ zIndex: 2 }}
         />
+
+        {/* Thumb animado */}
         <motion.div
           className={cn(
             "pointer-events-none absolute top-1/2 h-7 w-7 -translate-y-1/2 rounded-full border-4 border-white shadow-soft",
             current.color
           )}
-          animate={{ left: `calc(${percent}% - ${percent / 100} * 28px)` }}
+          animate={{
+            left: `calc(${percent}% - ${(percent / 100) * 28}px)`,
+          }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
           style={{ left: `calc(${percent}% - 14px)` }}
         />
@@ -110,13 +132,14 @@ export function EmotionalThermometer({
         <span>Muito bem</span>
       </div>
 
+      {/* Card de mensagem com transição de cor e conteúdo */}
       <AnimatePresence mode="wait">
         <motion.div
           key={current.value}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.25 }}
+          transition={{ duration: 0.22 }}
           className={cn("rounded-xl p-4", current.glow)}
         >
           <p className="text-sm font-medium text-ink-800">{current.label}</p>
@@ -124,10 +147,20 @@ export function EmotionalThermometer({
         </motion.div>
       </AnimatePresence>
 
+      {/* Botão de registro com micro-interação */}
       {onCheckIn && (
-        <button onClick={handleConfirm} className="btn-primary mt-5 w-full sm:w-auto">
+        <motion.button
+          onClick={handleConfirm}
+          whileTap={{ scale: 0.97 }}
+          animate={confirmed ? { scale: [1, 1.03, 1] } : {}}
+          transition={{ duration: 0.25 }}
+          className={cn(
+            "btn-primary mt-5 w-full sm:w-auto",
+            confirmed && "bg-sage-600"
+          )}
+        >
           {confirmed ? "Registrado ✓" : "Registrar meu estado de hoje"}
-        </button>
+        </motion.button>
       )}
     </div>
   );
