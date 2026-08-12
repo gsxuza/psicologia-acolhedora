@@ -34,7 +34,8 @@ export function SpecialtiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: (i % 3) * 0.08 }}
-              className="card-soft flex gap-4 p-5"
+              whileHover={{ y: -4, transition: { duration: 0.2, ease: "easeOut" } }}
+              className="card-soft flex cursor-default gap-4 p-5 transition-shadow hover:shadow-soft"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-dusk-100 text-dusk-500">
                 <s.icon size={18} />

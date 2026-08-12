@@ -43,7 +43,8 @@ export function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="card-soft p-6"
+              whileHover={{ y: -5, transition: { duration: 0.2, ease: "easeOut" } }}
+              className="card-soft cursor-default p-6 transition-shadow hover:shadow-soft"
             >
               <Quote className="mb-3 text-dusk-300" size={22} />
               <p className="text-sm italic text-ink-700/70">&ldquo;{t.text}&rdquo;</p>

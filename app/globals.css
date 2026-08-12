@@ -2,6 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────
+   VARIÁVEIS DE DESIGN — paleta de tokens CSS
+   Preparadas para dark mode (não ativado ainda).
+   Para ativar: adicione `dark` ao className do
+   <html> ou use data-theme="dark".
+   ───────────────────────────────────────────── */
+
+:root {
+  /* Fundos */
+  --color-bg-base:   #F5F4F0; /* sand-100 */
+  --color-bg-card:   #ffffff;
+  --color-bg-subtle: #EDEBE4; /* sand-200 */
+
+  /* Texto */
+  --color-text-primary:   #2E3A38; /* ink-700 */
+  --color-text-secondary: rgba(46, 58, 56, 0.65);
+  --color-text-muted:     rgba(46, 58, 56, 0.45);
+
+  /* Bordas */
+  --color-border: #EDEBE4; /* sand-200 */
+
+  /* Accent principal */
+  --color-accent:       #217F73; /* sage-500 */
+  --color-accent-hover: #1A6459; /* sage-600 */
+  --color-accent-soft:  #EFF6F5; /* sage-50 */
+  --color-accent-text:  #17544B; /* sage-700 */
+
+  /* Accent secundário (rosa) */
+  --color-rose:      #DD8489; /* dusk-400 */
+  --color-rose-soft: #FDF3F3; /* dusk-50 */
+
+  /* Sombras */
+  --shadow-soft:   0 4px 24px -8px rgba(51, 65, 61, 0.12);
+  --shadow-softer: 0 2px 12px -4px rgba(51, 65, 61, 0.08);
+}
+
+/* Dark mode — preparado, não ativado.
+   Estrutura dual para suportar data-theme e prefers-color-scheme. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-base:   #1B2624;
+    --color-bg-card:   #222E2C;
+    --color-bg-subtle: #2A3835;
+
+    --color-text-primary:   #D4E5E2;
+    --color-text-secondary: rgba(212, 229, 226, 0.65);
+    --color-text-muted:     rgba(212, 229, 226, 0.40);
+
+    --color-border: #2F3E3C;
+
+    --color-accent:       #5EA89B; /* sage-400, mais legível no escuro */
+    --color-accent-hover: #4C9A90; /* sage-500 */
+    --color-accent-soft:  #1F3230;
+    --color-accent-text:  #8CC5BA; /* sage-300 */
+
+    --color-rose:      #E9A6A9; /* dusk-300, mais suave no escuro */
+    --color-rose-soft: #2E1F20;
+
+    --shadow-soft:   0 4px 24px -8px rgba(0, 0, 0, 0.35);
+    --shadow-softer: 0 2px 12px -4px rgba(0, 0, 0, 0.25);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg-base:   #1B2624;
+  --color-bg-card:   #222E2C;
+  --color-bg-subtle: #2A3835;
+
+  --color-text-primary:   #D4E5E2;
+  --color-text-secondary: rgba(212, 229, 226, 0.65);
+  --color-text-muted:     rgba(212, 229, 226, 0.40);
+
+  --color-border: #2F3E3C;
+
+  --color-accent:       #5EA89B;
+  --color-accent-hover: #4C9A90;
+  --color-accent-soft:  #1F3230;
+  --color-accent-text:  #8CC5BA;
+
+  --color-rose:      #E9A6A9;
+  --color-rose-soft: #2E1F20;
+
+  --shadow-soft:   0 4px 24px -8px rgba(0, 0, 0, 0.35);
+  --shadow-softer: 0 2px 12px -4px rgba(0, 0, 0, 0.25);
+}
+
+/* ─────────────────────────────────────────────
+   BASE
+   ───────────────────────────────────────────── */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -9,40 +98,59 @@
 
   body {
     @apply bg-sand-100 text-ink-700 antialiased;
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
   }
 
   h1, h2, h3, h4 {
     @apply font-display text-ink-800;
+    text-wrap: balance;
   }
 
   :focus-visible {
     outline: 2px solid theme("colors.mist.400");
     outline-offset: 2px;
     border-radius: 4px;
+    /* Transição suave no anel de foco */
+    transition: outline-offset 0.15s ease;
+  }
+
+  :focus-visible:not(:focus) {
+    outline-offset: 2px;
   }
 }
 
+/* ─────────────────────────────────────────────
+   COMPONENTES
+   ───────────────────────────────────────────── */
 @layer components {
   .card-soft {
     @apply bg-white rounded-xl2 shadow-softer border border-sand-200;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
 
+  /* Botão primário — com feedback tátil de escala no active */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-xl bg-sage-500 px-4 py-2.5
-      text-sm font-medium text-white shadow-softer transition-colors duration-200
-      hover:bg-sage-600 focus-visible:outline-none active:bg-sage-700 disabled:opacity-50;
+      text-sm font-medium text-white shadow-softer
+      transition-all duration-200
+      hover:bg-sage-600 focus-visible:outline-none active:bg-sage-700
+      active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-xl border border-sage-200 bg-white px-4 py-2.5
-      text-sm font-medium text-sage-700 transition-colors duration-200
-      hover:bg-sage-50 disabled:opacity-50;
+      text-sm font-medium text-sage-700
+      transition-all duration-200
+      hover:bg-sage-50 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none;
   }
 
+  /* Input com focus ring mais expressivo e transição suave */
   .input-field {
     @apply w-full rounded-lg border border-sand-300 bg-white px-3.5 py-2.5 text-sm text-ink-700
-      placeholder:text-ink-700/40 transition-shadow duration-150
-      focus:border-mist-300 focus:ring-2 focus:ring-mist-200;
+      placeholder:text-ink-700/40
+      transition-all duration-150
+      focus:border-mist-400 focus:ring-2 focus:ring-mist-200 focus:outline-none;
   }
 
   .label-field {
@@ -50,6 +158,9 @@
   }
 }
 
+/* ─────────────────────────────────────────────
+   ACESSIBILIDADE: movimento reduzido
+   ───────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
