@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input, Select, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { createClient } from "@/lib/supabase/client";
+import { createPatient, updatePatient } from "@/app/actions/patients";
 import type { Patient } from "@/lib/types";
 
 const patientSchema = z.object({
@@ -26,8 +26,8 @@ type PatientFormValues = z.infer<typeof patientSchema>;
 
 export function PatientForm({ patient }: { patient?: Patient }) {
   const router = useRouter();
-  const supabase = createClient();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
@@ -52,26 +52,20 @@ export function PatientForm({ patient }: { patient?: Patient }) {
 
   async function onSubmit(values: PatientFormValues) {
     setServerError(null);
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const payload = { ...values, created_by: user.id };
-
-    const { error, data } = patient
-      ? await supabase.from("patients").update(payload).eq("id", patient.id).select().single()
-      : await supabase.from("patients").insert(payload).select().single();
-
-    if (error) {
-      setServerError("Não foi possível salvar. Verifique os dados e tente novamente.");
-      return;
-    }
-
-    router.push(`/pacientes/${data.id}`);
-    router.refresh();
+    startTransition(async () => {
+      try {
+        if (patient) {
+          await updatePatient(patient.id, values);
+        } else {
+          await createPatient(values);
+        }
+      } catch {
+        setServerError("Não foi possível salvar. Verifique os dados e tente novamente.");
+      }
+    });
   }
+
+  const loading = isSubmitting || isPending;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -122,8 +116,8 @@ export function PatientForm({ patient }: { patient?: Patient }) {
         <Button type="button" variant="ghost" onClick={() => router.back()}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Salvando..." : "Salvar paciente"}
+        <Button type="submit" disabled={loading}>
+          {loading ? "Salvando..." : "Salvar paciente"}
         </Button>
       </div>
     </form>

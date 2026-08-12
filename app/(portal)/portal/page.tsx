@@ -1,24 +1,20 @@
 import Link from "next/link";
 import { CalendarDays, FileText } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
+import { sql } from "@/lib/db";
 import { PortalThermometerCard } from "@/components/portal/PortalThermometerCard";
 import { Badge, sessionStatusLabel, sessionStatusTone } from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";
 import type { Patient, PatientDocument, Session } from "@/lib/types";
 
 export default async function PortalHomePage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
 
-  const { data: patient } = await supabase
-    .from("patients")
-    .select("*")
-    .eq("user_id", user!.id)
-    .maybeSingle();
+  const patientRows = await sql`
+    SELECT * FROM patients WHERE user_id = ${userId} LIMIT 1
+  `;
 
-  if (!patient) {
+  if (!patientRows[0]) {
     return (
       <div className="card-soft p-8 text-center">
         <p className="font-display text-lg font-semibold text-ink-800">
@@ -32,24 +28,15 @@ export default async function PortalHomePage() {
     );
   }
 
-  const p = patient as Patient;
+  const p = patientRows[0] as Patient;
 
-  const [{ data: sessions }, { data: documents }] = await Promise.all([
-    supabase
-      .from("sessions")
-      .select("*")
-      .eq("patient_id", p.id)
-      .order("date", { ascending: false })
-      .limit(5),
-    supabase
-      .from("documents")
-      .select("*")
-      .eq("patient_id", p.id)
-      .eq("is_public", true),
+  const [sessionRows, documentRows] = await Promise.all([
+    sql`SELECT * FROM sessions WHERE patient_id = ${p.id} ORDER BY date DESC LIMIT 5`,
+    sql`SELECT * FROM documents WHERE patient_id = ${p.id} AND is_public = true`,
   ]);
 
-  const sessionList = (sessions ?? []) as Session[];
-  const documentList = (documents ?? []) as PatientDocument[];
+  const sessionList = sessionRows as Session[];
+  const documentList = documentRows as PatientDocument[];
 
   return (
     <div className="space-y-6">
@@ -62,7 +49,7 @@ export default async function PortalHomePage() {
         </p>
       </div>
 
-      <PortalThermometerCard patientId={p.id} ownerId={p.created_by} userId={user!.id} />
+      <PortalThermometerCard patientId={p.id} ownerId={p.created_by} userId={userId!} />
 
       <section>
         <h2 className="mb-3 flex items-center gap-2 font-display text-base font-semibold text-ink-800">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +8,7 @@ import { z } from "zod";
 import { Plus, X } from "lucide-react";
 import { Input, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { createClient } from "@/lib/supabase/client";
+import { createDocument } from "@/app/actions/documents";
 import type { Patient } from "@/lib/types";
 
 const documentSchema = z.object({
@@ -16,16 +16,16 @@ const documentSchema = z.object({
   category: z.enum(["orientacao", "material", "contrato", "outro"]),
   patient_id: z.string().optional(),
   is_public: z.boolean().optional(),
+  file_url: z.string().url("Informe uma URL válida"),
 });
 
 type DocumentFormValues = z.infer<typeof documentSchema>;
 
 export function DocumentUploadForm({ patients }: { patients: Patient[] }) {
   const router = useRouter();
-  const supabase = createClient();
   const [open, setOpen] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
@@ -39,47 +39,25 @@ export function DocumentUploadForm({ patients }: { patients: Patient[] }) {
 
   async function onSubmit(values: DocumentFormValues) {
     setError(null);
-    if (!file) {
-      setError("Selecione um arquivo para enviar.");
-      return;
-    }
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const path = `${user.id}/${Date.now()}-${file.name}`;
-    const { error: uploadError } = await supabase.storage
-      .from("documents")
-      .upload(path, file);
-
-    if (uploadError) {
-      setError("Falha ao enviar o arquivo. Tente novamente.");
-      return;
-    }
-
-    const { data: publicUrl } = supabase.storage.from("documents").getPublicUrl(path);
-
-    const { error: insertError } = await supabase.from("documents").insert({
-      title: values.title,
-      category: values.category,
-      patient_id: values.patient_id || null,
-      is_public: values.is_public ?? false,
-      file_url: publicUrl.publicUrl,
-      created_by: user.id,
+    startTransition(async () => {
+      try {
+        await createDocument({
+          title: values.title,
+          category: values.category,
+          patient_id: values.patient_id || undefined,
+          is_public: values.is_public ?? false,
+          file_url: values.file_url,
+        });
+        reset();
+        setOpen(false);
+        router.refresh();
+      } catch {
+        setError("Não foi possível salvar o documento.");
+      }
     });
-
-    if (insertError) {
-      setError("Não foi possível salvar o documento.");
-      return;
-    }
-
-    reset();
-    setFile(null);
-    setOpen(false);
-    router.refresh();
   }
+
+  const loading = isSubmitting || isPending;
 
   return (
     <div className="space-y-4">
@@ -127,14 +105,15 @@ export function DocumentUploadForm({ patients }: { patients: Patient[] }) {
             {...register("patient_id")}
           />
 
-          <div className="sm:col-span-2">
-            <label className="label-field">Arquivo</label>
-            <input
-              type="file"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-ink-700/70 file:mr-3 file:rounded-lg file:border-0 file:bg-sage-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-sage-700"
-            />
-          </div>
+          <Input
+            label="URL do arquivo"
+            type="url"
+            className="sm:col-span-2"
+            error={errors.file_url?.message}
+            placeholder="https://..."
+            hint="Cole o link direto para o arquivo (Google Drive, Dropbox, etc.)"
+            {...register("file_url")}
+          />
 
           <label className="flex items-center gap-2 text-sm text-ink-700/70 sm:col-span-2">
             <input type="checkbox" className="rounded border-sand-300" {...register("is_public")} />
@@ -148,8 +127,8 @@ export function DocumentUploadForm({ patients }: { patients: Patient[] }) {
           )}
 
           <div className="flex justify-end sm:col-span-2">
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Enviando..." : "Salvar documento"}
+            <Button type="submit" disabled={loading}>
+              {loading ? "Salvando..." : "Salvar documento"}
             </Button>
           </div>
         </form>
