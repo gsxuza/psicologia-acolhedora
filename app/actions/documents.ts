@@ -28,3 +28,10 @@ export async function createDocument(data: DocumentPayload) {
     )
   `;
 }
+
+export async function deleteDocument(id: string) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Not authenticated");
+
+  await sql`DELETE FROM documents WHERE id = ${id} AND created_by = ${userId}`;
+}
