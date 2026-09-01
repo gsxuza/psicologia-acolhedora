@@ -18,7 +18,7 @@ export function LandingHeader() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -27,38 +27,44 @@ export function LandingHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-30 border-b transition-all duration-300",
+        "sticky top-0 z-30 transition-all duration-300",
         scrolled
-          ? "border-sand-200 bg-sand-100/95 shadow-softer backdrop-blur"
-          : "border-transparent bg-transparent"
+          ? "border-b border-sand-200/80 bg-sand-100/90 shadow-sm backdrop-blur-md"
+          : "border-b border-transparent bg-transparent"
       )}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5">
           <BrandMark />
           <span className="font-display text-base font-semibold text-ink-800">
             Gabriela<span className="font-normal text-sage-600">Silva</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm font-medium text-ink-700/70 md:flex">
+        {/* Nav desktop */}
+        <nav className="hidden items-center gap-8 text-sm font-medium text-ink-700/55 md:flex">
           {NAV.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-sage-700"
+              className="transition-colors hover:text-ink-800"
             >
               {item.label}
             </a>
           ))}
         </nav>
 
+        {/* Ações */}
         <div className="flex items-center gap-3">
-          <Link href="/login" className="btn-primary hidden sm:inline-flex">
-            Login
+          <Link
+            href="/login"
+            className="hidden rounded-full border border-sand-300 bg-white px-5 py-2 text-sm font-medium text-ink-800 shadow-sm transition-all hover:border-sage-300 hover:shadow-md sm:inline-flex"
+          >
+            Entrar
           </Link>
           <button
-            className="rounded-lg p-2 text-ink-700/70 hover:bg-sand-200 md:hidden"
+            className="rounded-xl p-2 text-ink-700/60 hover:bg-sand-200 md:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label="Abrir menu"
           >
@@ -91,6 +97,7 @@ export function LandingHeader() {
         </div>
       </div>
 
+      {/* Menu mobile */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -109,7 +116,7 @@ export function LandingHeader() {
                   initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.2 }}
-                  className="rounded-lg px-2 py-2.5 transition-colors hover:text-sage-700"
+                  className="rounded-xl px-3 py-2.5 transition-colors hover:bg-sand-200 hover:text-ink-800"
                 >
                   {item.label}
                 </motion.a>
@@ -118,14 +125,14 @@ export function LandingHeader() {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: NAV.length * 0.05, duration: 0.2 }}
-                className="mt-1"
+                className="mt-2 pt-2 border-t border-sand-200"
               >
                 <Link
                   href="/login"
-                  className="btn-primary w-full justify-center"
+                  className="block rounded-xl bg-sage-600 px-4 py-3 text-center text-sm font-semibold text-white"
                   onClick={() => setOpen(false)}
                 >
-                  Login
+                  Entrar
                 </Link>
               </motion.div>
             </nav>
@@ -136,8 +143,6 @@ export function LandingHeader() {
   );
 }
 
-// Ícone de rede neural inspirado no logotipo (nós conectados formando um
-// contorno de cérebro), em SVG para renderizar nítido em qualquer tamanho.
 export function BrandMark({ size = 32 }: { size?: number }) {
   return (
     <svg

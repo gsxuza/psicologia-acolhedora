@@ -1,16 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Quote } from "lucide-react";
 
 // ⚠️ CONTEÚDO DE EXEMPLO — substitua pelos depoimentos reais de pacientes
-// (com autorização deles) antes de publicar. Não usar nomes/citações
-// inventados atribuídos a pessoas reais.
-const TESTIMONIALS = [
-  {
-    text: "Substitua este texto pelo depoimento real de um(a) paciente que autorizou a divulgação.",
-    label: "Paciente em acompanhamento",
-  },
+// (com autorização deles) antes de publicar em produção.
+const FEATURED = {
+  text: "Substitua este texto pelo depoimento principal de um(a) paciente que autorizou a divulgação.",
+  label: "Paciente em acompanhamento",
+};
+
+const OTHERS = [
   {
     text: "Substitua este texto pelo depoimento real de um(a) paciente que autorizou a divulgação.",
     label: "Paciente em acompanhamento",
@@ -23,34 +22,63 @@ const TESTIMONIALS = [
 
 export function TestimonialsSection() {
   return (
-    <section id="depoimentos" className="px-6 py-20">
-      <div className="mx-auto max-w-5xl">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+    <section id="depoimentos" className="px-6 py-24">
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5 }}
-          className="text-center font-display text-3xl font-semibold text-ink-800"
+          transition={{ duration: 0.4 }}
+          className="mb-12 text-xs font-semibold uppercase tracking-widest text-sage-600"
         >
           Depoimentos
-        </motion.h2>
+        </motion.p>
 
-        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          {TESTIMONIALS.map((t, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              whileHover={{ y: -5, transition: { duration: 0.2, ease: "easeOut" } }}
-              className="card-soft cursor-default p-6 transition-shadow hover:shadow-soft"
-            >
-              <Quote className="mb-3 text-dusk-300" size={22} />
-              <p className="text-sm italic text-ink-700/70">&ldquo;{t.text}&rdquo;</p>
-              <p className="mt-4 text-xs font-medium text-ink-700/50">— {t.label}</p>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          {/* Depoimento destaque */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.55 }}
+            className="flex flex-col justify-between rounded-3xl bg-sage-600 p-8 lg:col-span-2"
+          >
+            <div>
+              <svg
+                className="mb-6 text-white/25"
+                width="44"
+                height="32"
+                viewBox="0 0 44 32"
+                fill="currentColor"
+              >
+                <path d="M0 32V19.2C0 13.867 1.333 9.333 4 5.6 6.667 1.867 10.933 0 16.8 0v5.6c-3.2 0-5.467 1.067-6.8 3.2-1.333 2.133-2 4.533-2 7.2H14V32H0Zm22.4 0V19.2c0-5.333 1.333-9.867 4-13.6C29.067 1.867 33.333 0 39.2 0v5.6c-3.2 0-5.467 1.067-6.8 3.2-1.333 2.133-2 4.533-2 7.2H36.4V32H22.4Z" />
+              </svg>
+              <p className="font-display text-xl font-medium leading-relaxed text-white sm:text-2xl">
+                &ldquo;{FEATURED.text}&rdquo;
+              </p>
+            </div>
+            <p className="mt-8 text-sm font-medium text-white/50">— {FEATURED.label}</p>
+          </motion.div>
+
+          {/* Dois depoimentos menores */}
+          <div className="flex flex-col gap-4 lg:col-span-1">
+            {OTHERS.map((t, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.45, delay: 0.1 + i * 0.1 }}
+                className="flex flex-1 flex-col justify-between rounded-3xl border border-sand-200 bg-white p-6"
+              >
+                <p className="text-sm italic leading-relaxed text-ink-700/65">
+                  &ldquo;{t.text}&rdquo;
+                </p>
+                <p className="mt-4 text-xs font-medium text-ink-700/40">— {t.label}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

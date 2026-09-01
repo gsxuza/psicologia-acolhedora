@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 
 const FAQ = [
   {
@@ -31,41 +31,54 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="bg-white/60 px-6 py-20">
-      <div className="mx-auto max-w-2xl">
-        <h2 className="text-center font-display text-3xl font-semibold text-ink-800">
-          Perguntas frequentes
-        </h2>
+    <section id="faq" className="px-6 py-24">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.4fr]">
+          {/* Lado esquerdo — título fixo */}
+          <div className="lg:sticky lg:top-32 lg:self-start">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sage-600">FAQ</p>
+            <h2 className="font-display text-4xl font-semibold leading-tight text-ink-800">
+              Perguntas<br />frequentes
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-ink-700/55">
+              Ainda tem dúvidas? Entre em contato pelo WhatsApp — respondo com prazer.
+            </p>
+          </div>
 
-        <div className="mt-10 space-y-3">
-          {FAQ.map((item, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div key={item.q} className="card-soft overflow-hidden">
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between gap-4 p-5 text-left"
-                >
-                  <span className="font-medium text-ink-800">{item.q}</span>
-                  <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                    <ChevronDown size={18} className="text-ink-700/50" />
-                  </motion.span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
-                    >
-                      <p className="px-5 pb-5 text-sm text-ink-700/65">{item.a}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+          {/* Acordeão */}
+          <div className="divide-y divide-sand-200">
+            {FAQ.map((item, i) => {
+              const isOpen = openIndex === i;
+              return (
+                <div key={item.q}>
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                  >
+                    <span className={`font-medium transition-colors ${isOpen ? "text-sage-700" : "text-ink-800"}`}>
+                      {item.q}
+                    </span>
+                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-colors ${isOpen ? "bg-sage-100 text-sage-700" : "bg-sand-200 text-ink-700/50"}`}>
+                      {isOpen ? <Minus size={14} /> : <Plus size={14} />}
+                    </span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                        className="overflow-hidden"
+                      >
+                        <p className="pb-6 text-sm leading-relaxed text-ink-700/60">{item.a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
