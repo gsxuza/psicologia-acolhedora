@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Users, CalendarDays, FileText, Leaf } from "lucide-react";
+import { LayoutGrid, Users, CalendarDays, FileText, LogOut } from "lucide-react";
+import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { BrandMark } from "@/components/landing/LandingHeader";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Painel", icon: LayoutGrid },
@@ -14,47 +17,63 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { signOut } = useClerk();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await signOut();
+    router.push("/login");
+  }
 
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-sand-200 bg-white/70 px-4 py-6 md:flex">
-      <div className="mb-8 flex items-center gap-2 px-2">
-        <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-sage-100">
-          <span className="absolute h-9 w-9 rounded-xl bg-sage-200 animate-breathe" />
-          <Leaf className="relative h-4.5 w-4.5 text-sage-600" size={18} />
-        </span>
-        <div className="leading-tight">
-          <p className="font-display text-sm font-semibold text-ink-800">Gabriela Silva</p>
-          <p className="text-[11px] text-ink-700/50">painel da psicóloga</p>
+    <aside className="hidden w-60 shrink-0 flex-col bg-ink-900 md:flex">
+      {/* Logo */}
+      <div className="flex items-center gap-2.5 px-5 py-6">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
+          <BrandMark size={24} />
         </div>
+        <span className="font-display text-sm font-semibold text-white">
+          Gabriela<span className="font-normal text-white/50">Silva</span>
+        </span>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1">
+      {/* Label */}
+      <p className="mb-2 px-5 text-[10px] font-semibold uppercase tracking-widest text-white/25">
+        Menu
+      </p>
+
+      {/* Nav */}
+      <nav className="flex flex-1 flex-col gap-0.5 px-3">
         {NAV_ITEMS.map((item) => {
-          const active = pathname.startsWith(item.href);
+          const active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
                 active
-                  ? "bg-sage-100 text-sage-700"
-                  : "text-ink-700/70 hover:bg-sand-200"
+                  ? "bg-sage-600 text-white shadow-lg shadow-sage-600/20"
+                  : "text-white/50 hover:bg-white/8 hover:text-white/80"
               )}
             >
-              <Icon size={18} strokeWidth={2} />
+              <Icon size={17} strokeWidth={active ? 2.2 : 1.8} />
               {item.label}
             </Link>
           );
         })}
       </nav>
 
-      <div className="rounded-xl bg-mist-50 p-3.5 text-xs text-mist-700">
-        <p className="font-medium">Seus dados estão protegidos</p>
-        <p className="mt-1 text-mist-700/70">
-          Acesso isolado por conta e criptografado em trânsito (RLS + JWT).
-        </p>
+      {/* Footer */}
+      <div className="border-t border-white/8 p-4">
+        <button
+          onClick={handleSignOut}
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/40 transition-colors hover:bg-white/8 hover:text-white/70"
+        >
+          <LogOut size={16} />
+          Sair
+        </button>
       </div>
     </aside>
   );
