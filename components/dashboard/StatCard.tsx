@@ -63,7 +63,7 @@ export function StatCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-20px" }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="relative overflow-hidden rounded-2xl border border-sand-200 bg-white p-5"
+      className="relative overflow-hidden rounded-2xl border border-sand-200 bg-white p-4 sm:p-5"
     >
       {/* Barra decorativa no topo */}
       <div className={cn("absolute inset-x-0 top-0 h-0.5", config.bar)} />
@@ -71,11 +71,11 @@ export function StatCard({
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-medium text-ink-700/50">{label}</p>
-          <p className="mt-2 font-display text-3xl font-semibold text-ink-800">
+          <p className="mt-2 font-display text-2xl font-semibold text-ink-800 sm:text-3xl">
             {typeof value === "number" ? <CountUp target={value} /> : value}
           </p>
         </div>
-        <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", config.icon)}>
+        <span className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl sm:h-10 sm:w-10", config.icon)}>
           {icon}
         </span>
       </div>

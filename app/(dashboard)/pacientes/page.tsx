@@ -24,7 +24,7 @@ export default async function PatientsPage() {
     <>
       <Header title="Pacientes" subtitle={`${list.length} cadastrado${list.length !== 1 ? "s" : ""}`} userEmail={userEmail} />
 
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-4 sm:p-6">
         {list.length === 0 ? (
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-sand-300 bg-white py-16 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sage-100">
