@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Video, MapPin } from "lucide-react";
+import { toast } from "sonner";
 import { updateSessionField } from "@/app/actions/sessions";
 import { formatCurrency, formatDate, initials } from "@/lib/utils";
 import type { PaymentStatus, Session, SessionStatus } from "@/lib/types";
@@ -43,6 +44,7 @@ export function SessionRow({ session }: { session: Session }) {
     startTransition(async () => {
       await updateSessionField(session.id, field, value);
       router.refresh();
+      toast.success(field === "status" ? "Status atualizado" : "Pagamento atualizado");
     });
   }
 

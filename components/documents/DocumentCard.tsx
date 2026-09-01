@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { FileText, Lock, Eye, ExternalLink, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import type { PatientDocument } from "@/lib/types";
 import { deleteDocument } from "@/app/actions/documents";
 
@@ -31,6 +32,7 @@ export function DocumentCard({ document }: { document: PatientDocument }) {
     startTransition(async () => {
       await deleteDocument(document.id);
       router.refresh();
+      toast.success("Documento excluído");
     });
   }
 

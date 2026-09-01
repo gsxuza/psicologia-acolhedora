@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { User, Phone, Stethoscope, ShieldAlert } from "lucide-react";
+import { toast } from "sonner";
 import { Input, Select, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { createPatient, updatePatient } from "@/app/actions/patients";
@@ -75,9 +76,11 @@ export function PatientForm({ patient }: { patient?: Patient }) {
       try {
         if (patient) {
           await updatePatient(patient.id, values);
+          toast.success("Paciente atualizado com sucesso");
           router.push(`/pacientes/${patient.id}`);
         } else {
           await createPatient(values);
+          toast.success("Paciente cadastrado com sucesso");
           router.push("/pacientes");
         }
       } catch {
