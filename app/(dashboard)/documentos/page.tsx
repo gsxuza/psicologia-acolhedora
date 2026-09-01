@@ -3,7 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
 import { Header } from "@/components/layout/Header";
 import { DocumentUploadForm } from "@/components/documents/DocumentUploadForm";
-import { DocumentCard } from "@/components/documents/DocumentCard";
+import { DocumentList } from "@/components/documents/DocumentList";
 import type { Patient, PatientDocument } from "@/lib/types";
 
 export default async function DocumentsPage() {
@@ -49,11 +49,7 @@ export default async function DocumentsPage() {
             <p className="text-sm text-ink-700/50">
               {list.length} documento{list.length !== 1 ? "s" : ""}
             </p>
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-              {list.map((doc) => (
-                <DocumentCard key={doc.id} document={doc} />
-              ))}
-            </div>
+            <DocumentList documents={list} />
           </>
         )}
       </main>

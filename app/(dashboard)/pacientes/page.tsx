@@ -3,7 +3,7 @@ import { Plus, Users } from "lucide-react";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
 import { Header } from "@/components/layout/Header";
-import { PatientCard } from "@/components/patients/PatientCard";
+import { PatientList } from "@/components/patients/PatientList";
 import type { Patient } from "@/lib/types";
 
 export default async function PatientsPage() {
@@ -70,11 +70,7 @@ export default async function PatientsPage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-              {list.map((patient) => (
-                <PatientCard key={patient.id} patient={patient} />
-              ))}
-            </div>
+            <PatientList patients={list} />
           </>
         )}
       </main>
