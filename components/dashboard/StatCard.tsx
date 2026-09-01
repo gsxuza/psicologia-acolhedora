@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
 import { motion } from "framer-motion";
-import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function CountUp({ target }: { target: number }) {
@@ -39,12 +38,12 @@ function CountUp({ target }: { target: number }) {
 export function StatCard({
   label,
   value,
-  icon: Icon,
+  icon,
   tone = "sage",
 }: {
   label: string;
   value: string | number;
-  icon: LucideIcon;
+  icon: React.ReactNode;
   tone?: "sage" | "mist" | "dusk";
 }) {
   const tones = {
@@ -67,7 +66,7 @@ export function StatCard({
           tones[tone]
         )}
       >
-        <Icon size={20} />
+        {icon}
       </span>
       <div>
         <p className="text-2xl font-semibold text-ink-800">

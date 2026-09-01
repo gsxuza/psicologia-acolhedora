@@ -38,23 +38,23 @@ export default async function DashboardPage() {
 
       <main className="flex-1 space-y-6 p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Pacientes ativos" value={activePatients} icon={Users} tone="sage" />
+          <StatCard label="Pacientes ativos" value={activePatients} icon={<Users size={20} />} tone="sage" />
           <StatCard
             label="Próximas sessões"
             value={sessions.length}
-            icon={CalendarClock}
+            icon={<CalendarClock size={20} />}
             tone="mist"
           />
           <StatCard
             label="Confirmadas"
             value={confirmedThisWeek}
-            icon={CalendarCheck}
+            icon={<CalendarCheck size={20} />}
             tone="sage"
           />
           <StatCard
             label="Pagamentos pendentes"
             value={formatCurrency(pendingTotal)}
-            icon={Wallet}
+            icon={<Wallet size={20} />}
             tone="dusk"
           />
         </div>
