@@ -38,7 +38,7 @@ export default async function DashboardPage() {
         userEmail={userEmail}
       />
 
-      <main className="flex-1 p-6 space-y-6">
+      <main className="flex-1 space-y-6 p-4 sm:p-6">
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatCard label="Pacientes ativos" value={activePatients} icon={<Users size={18} />} tone="sage" />

@@ -18,19 +18,19 @@ export function Header({
   });
 
   return (
-    <header className="flex items-center justify-between border-b border-sand-200 bg-white/60 px-6 py-5 backdrop-blur">
-      <div>
-        <h1 className="font-display text-xl font-semibold text-ink-800">{title}</h1>
-        {subtitle && <p className="mt-0.5 text-sm text-ink-700/50">{subtitle}</p>}
+    <header className="flex items-center justify-between border-b border-sand-200 bg-white/60 px-4 py-4 backdrop-blur sm:px-6 sm:py-5">
+      <div className="min-w-0">
+        <h1 className="truncate font-display text-lg font-semibold text-ink-800 sm:text-xl">{title}</h1>
+        {subtitle && <p className="mt-0.5 hidden text-sm text-ink-700/50 sm:block">{subtitle}</p>}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex shrink-0 items-center gap-3">
         {/* Data atual */}
-        <p className="hidden text-xs text-ink-700/40 sm:block capitalize">{today}</p>
+        <p className="hidden text-xs text-ink-700/40 md:block capitalize">{today}</p>
 
         {/* Avatar do usuário */}
         {userEmail && (
-          <div className="flex items-center gap-2 rounded-full border border-sand-200 bg-white px-3 py-1.5 shadow-sm">
+          <div className="flex items-center gap-2 rounded-full border border-sand-200 bg-white px-2.5 py-1.5 shadow-sm sm:px-3">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sage-600 text-[11px] font-semibold text-white">
               {initials(userEmail)}
             </span>

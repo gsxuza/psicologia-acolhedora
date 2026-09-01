@@ -20,7 +20,7 @@ export default async function DocumentsPage() {
   return (
     <>
       <Header title="Documentos" subtitle="Materiais, orientações e contratos" userEmail={userEmail} />
-      <main className="flex-1 space-y-4 p-6">
+      <main className="flex-1 space-y-4 p-4 sm:p-6">
         <DocumentUploadForm patients={patientRows as Patient[]} />
 
         {list.length === 0 ? (
