@@ -1,8 +1,5 @@
 "use client";
 
-import { useClerk } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
 import { initials } from "@/lib/utils";
 
 export function Header({
@@ -14,38 +11,34 @@ export function Header({
   subtitle?: string;
   userEmail?: string | null;
 }) {
-  const { signOut } = useClerk();
-  const router = useRouter();
-
-  async function handleSignOut() {
-    await signOut();
-    router.push("/login");
-  }
+  const today = new Date().toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 
   return (
-    <header className="flex items-center justify-between border-b border-sand-200 bg-sand-100/80 px-6 py-5 backdrop-blur">
+    <header className="flex items-center justify-between border-b border-sand-200 bg-white/60 px-6 py-5 backdrop-blur">
       <div>
         <h1 className="font-display text-xl font-semibold text-ink-800">{title}</h1>
-        {subtitle && <p className="mt-0.5 text-sm text-ink-700/60">{subtitle}</p>}
+        {subtitle && <p className="mt-0.5 text-sm text-ink-700/50">{subtitle}</p>}
       </div>
 
       <div className="flex items-center gap-3">
+        {/* Data atual */}
+        <p className="hidden text-xs text-ink-700/40 sm:block capitalize">{today}</p>
+
+        {/* Avatar do usuário */}
         {userEmail && (
-          <div className="hidden items-center gap-2 rounded-full bg-white px-3 py-1.5 shadow-softer sm:flex">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-mist-100 text-xs font-semibold text-mist-700">
+          <div className="flex items-center gap-2 rounded-full border border-sand-200 bg-white px-3 py-1.5 shadow-sm">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sage-600 text-[11px] font-semibold text-white">
               {initials(userEmail)}
             </span>
-            <span className="text-sm text-ink-700/70">{userEmail}</span>
+            <span className="hidden text-xs font-medium text-ink-700/70 sm:block">
+              {userEmail.split("@")[0]}
+            </span>
           </div>
         )}
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-ink-700/60 transition-colors hover:bg-sand-200"
-          title="Sair"
-        >
-          <LogOut size={16} />
-          <span className="hidden sm:inline">Sair</span>
-        </button>
       </div>
     </header>
   );

@@ -28,41 +28,50 @@ export default async function DashboardPage() {
   );
   const confirmedThisWeek = sessions.filter((s) => s.status === "confirmed").length;
 
+  const firstName = userEmail?.split("@")[0]?.split(".")[0];
+
   return (
     <>
       <Header
         title="Painel"
-        subtitle="Um resumo tranquilo do seu consultório hoje"
+        subtitle={`Bom dia${firstName ? `, ${firstName}` : ""}. Aqui está o resumo do seu consultório.`}
         userEmail={userEmail}
       />
 
-      <main className="flex-1 space-y-6 p-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Pacientes ativos" value={activePatients} icon={<Users size={20} />} tone="sage" />
+      <main className="flex-1 p-6 space-y-6">
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <StatCard label="Pacientes ativos" value={activePatients} icon={<Users size={18} />} tone="sage" />
           <StatCard
             label="Próximas sessões"
             value={sessions.length}
-            icon={<CalendarClock size={20} />}
+            icon={<CalendarClock size={18} />}
             tone="mist"
           />
           <StatCard
             label="Confirmadas"
             value={confirmedThisWeek}
-            icon={<CalendarCheck size={20} />}
+            icon={<CalendarCheck size={18} />}
             tone="sage"
           />
           <StatCard
             label="Pagamentos pendentes"
             value={formatCurrency(pendingTotal)}
-            icon={<Wallet size={20} />}
+            icon={<Wallet size={18} />}
             tone="dusk"
           />
         </div>
 
+        {/* Sessões */}
         <div>
-          <h2 className="mb-3 font-display text-base font-semibold text-ink-800">
-            Próximas sessões
-          </h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-display text-base font-semibold text-ink-800">
+              Próximas sessões
+            </h2>
+            <a href="/sessoes" className="text-xs font-medium text-sage-600 hover:underline">
+              Ver todas →
+            </a>
+          </div>
           <UpcomingSessions sessions={sessions} />
         </div>
       </main>
