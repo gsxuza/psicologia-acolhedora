@@ -25,6 +25,7 @@ import {
   sessionStatusTone,
 } from "@/components/ui/Badge";
 import { MoodHistoryChart } from "@/components/portal/MoodHistoryChart";
+import { DeletePatientButton } from "@/components/patients/DeletePatientButton";
 import { formatCurrency, formatDate, initials } from "@/lib/utils";
 import type { MoodCheckin, Patient, PatientDocument, Session } from "@/lib/types";
 
@@ -159,13 +160,16 @@ export default async function PatientDetailPage({
               </div>
             </div>
 
-            {/* Editar */}
-            <Link
-              href={`/pacientes/${p.id}/editar`}
-              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-sand-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 shadow-sm transition-all hover:border-sage-300 hover:text-sage-700"
-            >
-              <Pencil size={14} /> Editar
-            </Link>
+            {/* Editar / Excluir */}
+            <div className="flex shrink-0 items-center gap-2">
+              <Link
+                href={`/pacientes/${p.id}/editar`}
+                className="inline-flex items-center gap-2 rounded-full border border-sand-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 shadow-sm transition-all hover:border-sage-300 hover:text-sage-700"
+              >
+                <Pencil size={14} /> Editar
+              </Link>
+              <DeletePatientButton patient={p} />
+            </div>
           </div>
 
           {/* Stats rápidas */}

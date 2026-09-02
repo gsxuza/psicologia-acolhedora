@@ -21,3 +21,19 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-patient-mood-thermometer-dashboard.md`
   summary: No therapist-facing way to see check-in frequency/gaps, an average-mood stat tile, or a full (>30) history view for a patient's emotional check-ins
   evidence: Enhancements beyond "view existing mood data on the patient page" as scoped; candidate for a follow-up spec if the psychologist wants deeper mood analytics
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-delete-patient.md`
+  summary: Deleting a patient leaves no audit trail (who deleted, when, which patient) despite cascading away a full clinical history (sessions, documents, mood check-ins)
+  evidence: Real compliance/record-keeping concern for a psychology-practice app handling health data; needs an audit-log table/mechanism, out of scope for this one spec
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-delete-patient.md`
+  summary: The new delete-confirmation modal in `DeletePatientButton.tsx` has no `role="dialog"`/`aria-modal`, no focus trap, and no Escape-to-close handler
+  evidence: This is the first modal dialog in the codebase (no prior pattern to follow); standard modal accessibility gaps confirmed by review, worth a follow-up once a second modal use case establishes the shared pattern
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-delete-patient.md`
+  summary: Cascade-deleting a patient's `documents` rows does not delete the underlying uploaded files from storage, leaving them orphaned
+  evidence: Pre-existing gap — the single-document delete action (`app/actions/documents.ts:deleteDocument`) already doesn't clean up storage either; not introduced by this change
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-delete-patient.md`
+  summary: No automated test covers `deletePatient`'s ownership scoping (`created_by = userId`), so a future refactor that weakens or drops that clause would ship undetected
+  evidence: Verification-gap review confirmed no test file references `deletePatient`, `updatePatient`, or `created_by` anywhere, and the repo has no test runner configured at all (`package.json` has no `test` script) — a repo-wide gap, not unique to this change

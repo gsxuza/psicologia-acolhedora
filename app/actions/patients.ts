@@ -65,3 +65,16 @@ export async function updatePatient(id: string, data: PatientPayload) {
   if (!rows[0]) throw new Error("Patient not found");
   redirect(`/pacientes/${rows[0].id}`);
 }
+
+export async function deletePatient(id: string) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Not authenticated");
+
+  const rows = await sql`
+    DELETE FROM patients
+    WHERE id = ${id} AND created_by = ${userId}
+    RETURNING id
+  `;
+
+  if (!rows[0]) throw new Error("Patient not found");
+}
