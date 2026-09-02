@@ -30,3 +30,14 @@ export function initials(name: string) {
     .map((n) => n[0]?.toUpperCase())
     .join("");
 }
+
+// Monta um link wa.me a partir de um telefone digitado livremente (com
+// parênteses, traços, espaços etc). Assume DDD+número brasileiro quando
+// não há código do país explícito, para casar com o formato já usado em
+// BRAND.whatsappNumber ("55" + DDD + número).
+export function buildWhatsAppLink(phone: string, message: string) {
+  const digits = phone.replace(/\D/g, "");
+  const withCountryCode =
+    digits.length === 10 || digits.length === 11 ? `55${digits}` : digits;
+  return `https://wa.me/${withCountryCode}?text=${encodeURIComponent(message)}`;
+}

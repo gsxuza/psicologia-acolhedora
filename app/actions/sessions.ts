@@ -48,3 +48,16 @@ export async function updateSessionField(
     await sql`UPDATE sessions SET payment_status = ${value}, updated_at = now() WHERE id = ${id} AND created_by = ${userId}`;
   }
 }
+
+export async function markReminderSent(id: string) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Not authenticated");
+
+  const rows = await sql`
+    UPDATE sessions SET reminder_sent = true, updated_at = now()
+    WHERE id = ${id} AND created_by = ${userId}
+    RETURNING id
+  `;
+
+  if (!rows[0]) throw new Error("Session not found");
+}
