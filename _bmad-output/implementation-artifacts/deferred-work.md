@@ -53,3 +53,19 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-whatsapp-session-reminder.md`
   summary: No accessible state indication for the "Lembrar"/"Enviado" button (relies on a `title` tooltip only, unreliable on touch/mobile) and no way to un-mark `reminder_sent` if clicked by mistake
   evidence: Same category of gap already deferred for `DeletePatientButton`'s modal — no established accessible-component pattern yet in this codebase; un-marking is a low-stakes product decision left open
+
+- source_spec: none (bmad-party-mode UX validation pass, whole system)
+  summary: CPF is stored with no format validation, checksum check, or encryption at rest — only digit-stripping normalization was added
+  evidence: LGPD-covered sensitive PII; a real product decision (validate format? encrypt at rest? mask on display?) beyond a quick UX-validation fix pass
+
+- source_spec: none (bmad-party-mode UX validation pass, whole system)
+  summary: The dashboard's time-of-day greeting (`Bom dia`/`Boa tarde`/`Boa noite`) is computed via `new Date().getHours()` in a server component, reflecting the server's timezone rather than the logged-in psychologist's local time
+  evidence: Correct greeting requires either a client component or a stored user timezone; out of scope for the one-line fix that replaced the previously-always-wrong hardcoded "Bom dia"
+
+- source_spec: none (bmad-party-mode UX validation pass, whole system)
+  summary: No single documented design-token source (DESIGN.md) — the admin dashboard's hand-written `rounded-2xl border-sand-200 bg-white` card pattern and the portal's `card-soft` utility class are two undocumented, independently-evolved visual systems for the same product
+  evidence: User explicitly chose "fix the findings now" over "formalize DESIGN.md/EXPERIENCE.md" this round; this is the exact gap that workflow would close, revisit when ready
+
+- source_spec: none (bmad-party-mode UX validation pass, whole system)
+  summary: No visible link from the public landing page to patient self-registration (`/registro`) — the only path in is `/login`, relying on Clerk's default SignIn "sign up" link (configured via `NEXT_PUBLIC_CLERK_SIGN_UP_URL`) rather than a first-class CTA
+  evidence: Not confirmed broken (Clerk's default UI likely provides the link), but unverified without running the app with real Clerk keys — worth a manual check

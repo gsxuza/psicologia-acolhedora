@@ -145,6 +145,11 @@ export function SessionRow({
             type="button"
             onClick={handleReminderClick}
             disabled={isPending}
+            aria-label={
+              session.reminder_sent
+                ? "Lembrete já enviado — clique para reenviar"
+                : "Enviar lembrete por WhatsApp"
+            }
             title={
               session.reminder_sent
                 ? "Lembrete já enviado — clique para reenviar"

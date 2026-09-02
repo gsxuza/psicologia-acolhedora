@@ -16,6 +16,7 @@ const patientSchema = z.object({
   full_name: z.string().min(2, "Informe o nome completo"),
   email: z.string().email("E-mail inválido").or(z.literal("")).optional(),
   phone: z.string().optional(),
+  cpf: z.string().optional(),
   birth_date: z.string().optional(),
   status: z.enum(["active", "inactive", "waiting"]),
   main_complaint: z.string().optional(),
@@ -60,6 +61,7 @@ export function PatientForm({ patient }: { patient?: Patient }) {
           full_name: patient.full_name,
           email: patient.email ?? "",
           phone: patient.phone ?? "",
+          cpf: patient.cpf ?? "",
           birth_date: patient.birth_date ?? "",
           status: patient.status,
           main_complaint: patient.main_complaint ?? "",
@@ -111,6 +113,12 @@ export function PatientForm({ patient }: { patient?: Patient }) {
         label="Data de nascimento"
         type="date"
         {...register("birth_date")}
+      />
+      <Input
+        label="CPF"
+        placeholder="000.000.000-00"
+        hint="Confidencial — visível apenas para você."
+        {...register("cpf")}
       />
       <Select
         label="Status"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Trash2, X, AlertTriangle } from "lucide-react";
@@ -14,12 +14,36 @@ export function DeletePatientButton({ patient }: { patient: Patient }) {
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   const [typedName, setTypedName] = useState("");
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const isMatch = typedName.trim() === patient.full_name.trim();
 
   function handleClose() {
     setOpen(false);
     setTypedName("");
+    triggerRef.current?.focus();
+  }
+
+  function handleDialogKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Escape" && !isPending) {
+      handleClose();
+      return;
+    }
+    if (e.key !== "Tab" || !panelRef.current) return;
+    const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), input:not([disabled])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   function handleConfirm() {
@@ -39,6 +63,7 @@ export function DeletePatientButton({ patient }: { patient: Patient }) {
   return (
     <>
       <Button
+        ref={triggerRef}
         type="button"
         variant="danger"
         className="px-4 py-2"
@@ -59,6 +84,11 @@ export function DeletePatientButton({ patient }: { patient: Patient }) {
             }}
           >
             <motion.div
+              ref={panelRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="delete-patient-title"
+              onKeyDown={handleDialogKeyDown}
               initial={{ opacity: 0, scale: 0.96, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 8 }}
@@ -70,7 +100,7 @@ export function DeletePatientButton({ patient }: { patient: Patient }) {
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-dusk-50 text-dusk-500">
                     <AlertTriangle size={16} />
                   </span>
-                  <h3 className="font-display text-base font-semibold text-ink-800">
+                  <h3 id="delete-patient-title" className="font-display text-base font-semibold text-ink-800">
                     Excluir paciente
                   </h3>
                 </div>
