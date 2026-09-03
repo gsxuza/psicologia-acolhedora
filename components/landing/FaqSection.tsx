@@ -10,12 +10,12 @@ const FAQ = [
     a: "É um momento de acolhimento e escuta inicial, onde entendemos juntos o que te trouxe até aqui e como podemos seguir.",
   },
   {
-    q: "As sessões são sigilosas?",
-    a: "Sim. Tudo o que é compartilhado em sessão é protegido pelo sigilo profissional, conforme o Código de Ética do Psicólogo.",
-  },
-  {
     q: "Atende por convênio?",
     a: "No momento o atendimento é particular. Posso emitir recibo para reembolso, dependendo do seu plano de saúde.",
+  },
+  {
+    q: "As sessões são sigilosas?",
+    a: "Sim. Tudo o que é compartilhado em sessão é protegido pelo sigilo profissional, conforme o Código de Ética do Psicólogo.",
   },
   {
     q: "Qual a duração e frequência das sessões?",
@@ -49,10 +49,15 @@ export function FaqSection() {
           <div className="divide-y divide-sand-200">
             {FAQ.map((item, i) => {
               const isOpen = openIndex === i;
+              const panelId = `faq-panel-${i}`;
+              const buttonId = `faq-button-${i}`;
               return (
                 <div key={item.q}>
                   <button
+                    id={buttonId}
                     onClick={() => setOpenIndex(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
                     className="flex w-full items-center justify-between gap-6 py-6 text-left"
                   >
                     <span className={`font-medium transition-colors ${isOpen ? "text-sage-700" : "text-ink-800"}`}>
@@ -65,6 +70,9 @@ export function FaqSection() {
                   <AnimatePresence initial={false}>
                     {isOpen && (
                       <motion.div
+                        id={panelId}
+                        role="region"
+                        aria-labelledby={buttonId}
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
