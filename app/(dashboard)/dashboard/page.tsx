@@ -29,12 +29,14 @@ export default async function DashboardPage() {
   const confirmedThisWeek = sessions.filter((s) => s.status === "confirmed").length;
 
   const firstName = userEmail?.split("@")[0]?.split(".")[0];
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
 
   return (
     <>
       <Header
         title="Painel"
-        subtitle={`Bom dia${firstName ? `, ${firstName}` : ""}. Aqui está o resumo do seu consultório.`}
+        subtitle={`${greeting}${firstName ? `, ${firstName}` : ""}. Aqui está o resumo do seu consultório.`}
         userEmail={userEmail}
       />
 

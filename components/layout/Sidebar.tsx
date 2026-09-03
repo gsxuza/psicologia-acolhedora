@@ -2,28 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Users, CalendarDays, FileText, LogOut } from "lucide-react";
-import { useClerk } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandMark } from "@/components/landing/LandingHeader";
-
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Painel", icon: LayoutGrid },
-  { href: "/pacientes", label: "Pacientes", icon: Users },
-  { href: "/sessoes", label: "Sessões", icon: CalendarDays },
-  { href: "/documentos", label: "Documentos", icon: FileText },
-];
+import { NAV_ITEMS } from "@/components/layout/navItems";
+import { useSignOut } from "@/lib/useSignOut";
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { signOut } = useClerk();
-  const router = useRouter();
-
-  async function handleSignOut() {
-    await signOut();
-    router.push("/login");
-  }
+  const { handleSignOut, isSigningOut } = useSignOut();
 
   return (
     <aside className="hidden w-60 shrink-0 flex-col bg-ink-900 md:flex">
@@ -68,11 +55,13 @@ export function Sidebar() {
       {/* Footer */}
       <div className="border-t border-white/8 p-4">
         <button
+          type="button"
           onClick={handleSignOut}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/40 transition-colors hover:bg-white/8 hover:text-white/70"
+          disabled={isSigningOut}
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/40 transition-colors hover:bg-white/8 hover:text-white/70 disabled:opacity-50"
         >
           <LogOut size={16} />
-          Sair
+          {isSigningOut ? "Saindo..." : "Sair"}
         </button>
       </div>
     </aside>

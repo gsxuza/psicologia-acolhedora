@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { GraduationCap, ShieldCheck, HeartHandshake, Quote } from "lucide-react";
 import { BRAND } from "@/lib/config";
+import { BentoCard } from "@/components/landing/BentoCard";
 
 const POINTS = [
   {
@@ -80,21 +81,13 @@ export function AboutSection() {
 
           {/* Três cards de pilares */}
           {POINTS.map((point, i) => (
-            <motion.div
-              key={point.title}
-              custom={i + 1}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
-              variants={fadeUp}
-              className="flex flex-col rounded-3xl border border-sand-200 bg-white p-6 lg:col-span-5"
-            >
+            <BentoCard key={point.title} index={i + 1} className="lg:col-span-5">
               <span className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl ${point.accent}`}>
                 <point.icon size={20} />
               </span>
               <h3 className="font-display text-base font-semibold text-ink-800">{point.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-700/60">{point.text}</p>
-            </motion.div>
+            </BentoCard>
           ))}
         </div>
       </div>

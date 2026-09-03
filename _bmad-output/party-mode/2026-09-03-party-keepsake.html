@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Party Mode — Sala de Revisão · psicologia-acolhedora</title>
+<style>
+  :root {
+    --sand-100: #faf7f2;
+    --sand-200: #f0e9de;
+    --sand-300: #ddd0bb;
+    --ink-800: #2c2620;
+    --ink-700: #4a4034;
+    --sage-600: #6f8c6a;
+    --sage-700: #5c7658;
+    --sage-100: #e4ebe1;
+    --dusk-100: #f0e3e6;
+    --dusk-500: #b3768a;
+    --mist-100: #e2ebee;
+    --mist-600: #4d7688;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--sand-100);
+    color: var(--ink-800);
+    font-family: -apple-system, "Segoe UI", Inter, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  header.hero {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  header.hero .kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage-600);
+    margin-bottom: 10px;
+  }
+  header.hero h1 {
+    font-size: 34px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  header.hero p {
+    color: var(--ink-700);
+    max-width: 560px;
+    margin: 0 auto;
+    font-size: 15px;
+  }
+  header.hero .date {
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--ink-700);
+    opacity: 0.6;
+  }
+
+  .cast {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 32px 0 8px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--white);
+    border: 1px solid var(--sand-300);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  section.act {
+    margin-top: 52px;
+  }
+  section.act .act-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-600);
+    margin-bottom: 6px;
+  }
+  section.act h2 {
+    font-size: 24px;
+    margin: 0 0 24px;
+    font-weight: 700;
+  }
+
+  .bubble {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+  }
+  .bubble .avatar {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--sand-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+  }
+  .bubble .content {
+    flex: 1;
+    background: var(--white);
+    border: 1px solid var(--sand-200);
+    border-radius: 16px;
+    padding: 14px 18px;
+  }
+  .bubble .name {
+    font-weight: 700;
+    font-size: 13.5px;
+    margin-bottom: 3px;
+  }
+  .bubble .role {
+    font-weight: 400;
+    opacity: 0.5;
+    font-size: 12px;
+  }
+  .bubble .text { font-size: 14.5px; color: var(--ink-800); }
+  .bubble .text code {
+    background: var(--sand-200);
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-size: 13px;
+  }
+
+  .bubble.mary .avatar { background: #fdf1e0; }
+  .bubble.john .avatar { background: var(--mist-100); }
+  .bubble.sally .avatar { background: var(--dusk-100); }
+  .bubble.winston .avatar { background: var(--sage-100); }
+  .bubble.amelia .avatar { background: var(--sand-200); }
+
+  .stage {
+    text-align: center;
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--ink-700);
+    opacity: 0.55;
+    margin: 20px 0;
+  }
+
+  .verdict {
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--sage-600), var(--sage-700));
+    color: white;
+    border-radius: 20px;
+    padding: 24px 26px;
+  }
+  .verdict .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.75;
+    margin-bottom: 8px;
+  }
+  .verdict p { margin: 0; font-size: 14.5px; line-height: 1.6; }
+  .verdict p + p { margin-top: 10px; }
+
+  .findings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  @media (max-width: 620px) {
+    .findings-grid { grid-template-columns: 1fr; }
+  }
+  .finding-card {
+    background: var(--white);
+    border: 1px solid var(--sand-200);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .finding-card .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 2px 9px;
+    margin-bottom: 8px;
+  }
+  .finding-card .tag.fixed { background: var(--sage-100); color: var(--sage-700); }
+  .finding-card .tag.backlog { background: var(--dusk-100); color: var(--dusk-500); }
+  .finding-card p { margin: 0; font-size: 13.5px; }
+
+  footer {
+    margin-top: 72px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-700);
+    opacity: 0.45;
+  }
+  footer .mark { font-size: 20px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">Party Mode · psicologia-acolhedora</div>
+    <h1>Duas sessões na sala de revisão</h1>
+    <p>Mary, John, Sally, Winston e Amelia passaram o sistema a limpo — primeiro a experiência do app inteiro, depois o site público. Um resumo do que a sala achou, discutiu e corrigiu.</p>
+    <div class="date">3 de setembro de 2026</div>
+  </header>
+
+  <div class="cast">
+    <span class="chip">📊 Mary — Business Analyst</span>
+    <span class="chip">📋 John — Product Manager</span>
+    <span class="chip">🎨 Sally — UX Designer</span>
+    <span class="chip">🏗️ Winston — System Architect</span>
+    <span class="chip">💻 Amelia — Senior Engineer</span>
+  </div>
+
+  <section class="act">
+    <div class="act-label">Ato I</div>
+    <h2>Validação de UX do sistema inteiro</h2>
+
+    <div class="bubble sally">
+      <div class="avatar">🎨</div>
+      <div class="content">
+        <div class="name">Sally <span class="role">UX Designer</span></div>
+        <div class="text">Lendo o código sem nem abrir o navegador, a sala achou <strong>6 problemas reais</strong>. O pior: sem jeito de deslogar no mobile — o botão "Sair" existia só no Sidebar desktop.</div>
+      </div>
+    </div>
+
+    <div class="bubble john">
+      <div class="avatar">📋</div>
+      <div class="content">
+        <div class="name">John <span class="role">Product Manager</span></div>
+        <div class="text">Prioridade real, não cosmético. Empurrei pra corrigir na hora em vez de escrever um <code>DESIGN.md</code> primeiro.</div>
+      </div>
+    </div>
+
+    <div class="bubble winston">
+      <div class="avatar">🏗️</div>
+      <div class="content">
+        <div class="name">Winston <span class="role">System Architect</span></div>
+        <div class="text">"Sem <code>DESIGN.md</code>, cada tela reinventa o card sozinha." — vira o running bit da sala.</div>
+      </div>
+    </div>
+
+    <div class="stage">Guilherme escolheu corrigir agora em vez de formalizar documentação.</div>
+
+    <div class="verdict">
+      <div class="label">Resultado</div>
+      <p>Sign-out mobile corrigido, botão duplicado removido, hook compartilhado extraído. Achados fora de escopo registrados como dívida, não perdidos.</p>
+    </div>
+  </section>
+
+  <section class="act">
+    <div class="act-label">Ato II</div>
+    <h2>Revisão de design do site público</h2>
+
+    <div class="bubble sally">
+      <div class="avatar">🎨</div>
+      <div class="content">
+        <div class="name">Sally <span class="role">UX Designer</span></div>
+        <div class="text">Pausa. A seção de Depoimentos tem um comentário <code>⚠️ CONTEÚDO DE EXEMPLO</code> e três citações de "substitua este texto pelo depoimento real". Isso renderiza assim, ao vivo, se ninguém mexer.</div>
+      </div>
+    </div>
+
+    <div class="bubble john">
+      <div class="avatar">📋</div>
+      <div class="content">
+        <div class="name">John <span class="role">Product Manager</span></div>
+        <div class="text">É site de <em>psicóloga</em>. A primeira prova social que a pessoal insegura vê sendo "substitua este texto" é confiança quebrada no primeiro clique. Prioridade um.</div>
+      </div>
+    </div>
+
+    <div class="bubble winston">
+      <div class="avatar">🏗️</div>
+      <div class="content">
+        <div class="name">Winston <span class="role">System Architect</span></div>
+        <div class="text">De novo: três seções, três implementações de card bento diferentes. Prova A do que eu já vinha dizendo.</div>
+      </div>
+    </div>
+
+    <div class="bubble amelia">
+      <div class="avatar">💻</div>
+      <div class="content">
+        <div class="name">Amelia <span class="role">Senior Engineer</span></div>
+        <div class="text">Achado técnico: o acordeão do FAQ não tem <code>aria-expanded</code>. Leitor de tela não anuncia o estado aberto/fechado.</div>
+      </div>
+    </div>
+
+    <div class="bubble john">
+      <div class="avatar">📋</div>
+      <div class="content">
+        <div class="name">John <span class="role">Product Manager</span></div>
+        <div class="text">E a pergunta sobre convênio tá enterrada na 3ª posição de um acordeão — é a informação mais buscada antes de agendar.</div>
+      </div>
+    </div>
+
+    <div class="stage">Guilherme: "corrija tudo que foi discutido."</div>
+
+    <div class="findings-grid">
+      <div class="finding-card">
+        <span class="tag fixed">Corrigido</span>
+        <p>Depoimentos placeholder → estado honesto "em breve" até haver conteúdo real autorizado</p>
+      </div>
+      <div class="finding-card">
+        <span class="tag fixed">Corrigido</span>
+        <p>Pergunta sobre convênio movida para 2ª posição no FAQ</p>
+      </div>
+      <div class="finding-card">
+        <span class="tag fixed">Corrigido</span>
+        <p><code>aria-expanded</code>/<code>aria-controls</code> adicionados ao acordeão do FAQ</p>
+      </div>
+      <div class="finding-card">
+        <span class="tag fixed">Corrigido</span>
+        <p><code>BentoCard</code> compartilhado extraído — o pedido antigo do Winston, finalmente atendido</p>
+      </div>
+      <div class="finding-card">
+        <span class="tag backlog">Backlog</span>
+        <p>Ambiguidade do link "Entrar" no header — Sally levantou, John rebateu, sala não convergiu</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="mark">🎉</div>
+    Sala instalada · psicologia-acolhedora · registrado em <code>party-mode/memories/installed</code>
+  </footer>
+
+</div>
+</body>
+</html>

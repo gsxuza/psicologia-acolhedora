@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sessão de Brainstorming — Psicologia Acolhedora</title>
+<style>
+  :root{
+    --cream:#fdf6ee;
+    --cream2:#f7ecdd;
+    --paper:#fffaf2;
+    --ink:#3a2f2a;
+    --ink-soft:#6b5c53;
+    --terracotta:#d97757;
+    --terracotta-deep:#b85c3f;
+    --sage:#7f9e82;
+    --sage-deep:#5f7f63;
+    --gold:#dba94b;
+    --lilac:#a68fc0;
+    --line:#e6d7c3;
+    --shadow: 0 10px 30px rgba(90,60,40,0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(circle at 15% 5%, #fffaf2 0%, var(--cream) 45%, var(--cream2) 100%);
+    color:var(--ink);
+    font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px 120px;}
+
+  /* subtle paper texture via layered radial gradients, no external assets */
+  .texture{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(217,119,87,0.05) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(127,158,130,0.06) 0, transparent 45%),
+      radial-gradient(circle at 60% 10%, rgba(219,169,75,0.05) 0, transparent 35%);
+  }
+
+  h1,h2,h3{font-family: 'Iowan Old Style', Georgia, serif; font-weight:400; letter-spacing:0.2px;}
+  .sans{font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    position:relative;
+    padding:90px 22px 70px;
+    text-align:center;
+    overflow:hidden;
+  }
+  header.hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(217,119,87,0.10), transparent 70%);
+    z-index:-1;
+  }
+  .kicker{
+    display:inline-block;
+    font-family:-apple-system,'Segoe UI',sans-serif;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--terracotta-deep);
+    background:rgba(217,119,87,0.10);
+    border:1px solid rgba(217,119,87,0.25);
+    border-radius:20px;
+    padding:6px 16px;
+    margin-bottom:24px;
+  }
+  h1.title{
+    font-size:clamp(32px,5.5vw,56px);
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  h1.title em{
+    font-style:italic;
+    color:var(--terracotta-deep);
+  }
+  .subtitle{
+    font-size:18px;
+    color:var(--ink-soft);
+    max-width:560px;
+    margin:0 auto 30px;
+  }
+  .meta-row{
+    display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+    font-family:-apple-system,'Segoe UI',sans-serif;
+    font-size:13px; color:var(--ink-soft);
+  }
+  .meta-pill{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:6px 14px;
+    box-shadow:var(--shadow);
+  }
+
+  /* heartbeat / breathing line divider */
+  .breath{
+    width:100%; height:60px; margin:10px 0 0;
+  }
+  .breath svg{width:100%;height:100%;display:block;}
+
+  /* ---------- SECTION SHELL ---------- */
+  section.tech{
+    margin:70px 0;
+    position:relative;
+  }
+  .tech-head{
+    display:flex; align-items:baseline; gap:16px; margin-bottom:8px;
+  }
+  .tech-num{
+    font-family:-apple-system,'Segoe UI',sans-serif;
+    font-size:13px; color:#fff; background:var(--terracotta);
+    border-radius:50%; width:34px;height:34px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; font-weight:600;
+  }
+  .tech-head h2{font-size:28px; margin:0; color:var(--ink);}
+  .tech-desc{
+    font-family:-apple-system,'Segoe UI',sans-serif;
+    font-size:14px; color:var(--ink-soft); margin:0 0 34px 50px; max-width:600px;
+  }
+
+  /* legend */
+  .legend{
+    display:flex; gap:18px; font-family:-apple-system,'Segoe UI',sans-serif; font-size:12.5px;
+    color:var(--ink-soft); margin:0 0 26px 50px; flex-wrap:wrap;
+  }
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .dot.user{background:var(--terracotta);}
+  .dot.coach{background:var(--sage-deep);}
+
+  /* ================= JTBD: two doors ================= */
+  .doors{
+    display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-left:50px;
+  }
+  @media(max-width:720px){.doors{grid-template-columns:1fr; margin-left:0;}}
+  .door{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px 24px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .door::before{
+    content:"";
+    position:absolute; top:0; left:0; width:6px; height:100%;
+  }
+  .door.patient::before{background:var(--terracotta);}
+  .door.therapist::before{background:var(--sage-deep);}
+  .door h3{margin:0 0 4px; font-size:19px;}
+  .door .role-tag{
+    font-family:-apple-system,'Segoe UI',sans-serif; font-size:11.5px; text-transform:uppercase;
+    letter-spacing:1.5px; color:var(--ink-soft);
+  }
+  .door .job{
+    font-style:italic; font-size:16px; margin:14px 0 18px; color:var(--ink);
+  }
+  .idea-card{
+    background:var(--cream2);
+    border-radius:12px;
+    padding:14px 16px;
+    margin-top:10px;
+    font-family:-apple-system,'Segoe UI',sans-serif;
+    font-size:14px;
+    position:relative;
+  }
+  .idea-card .attrib{
+    display:block; margin-top:8px; font-size:11px; color:var(--ink-soft); letter-spacing:0.5px;
+  }
+  .idea-card .attrib.coach{color:var(--sage-deep);}
+  .idea-card .attrib.user{color:var(--terracotta-deep);}
+  .idea-card .name{font-weight:600; color:var(--ink); display:block; margin-bottom:4px;}
+
+  /* ================= EMPATHY MAP ================= */
+  .empathy-wrap{margin-left:50px; position:relative;}
+  .clock-scene{
+    text-align:center; font-family:-apple-system,'Segoe UI',sans-serif; color:var(--ink-soft);
+    font-size:13px; margin-bottom:22px; letter-spacing:0.5px;
+  }
+  .map-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:0; border-radius:20px; overflow:hidden;
+    box-shadow:var(--shadow); border:1px solid var(--line);
+  }
+  @media(max-width:720px){.map-grid{grid-template-columns:1fr;}}
+  .quad{
+    padding:26px 24px; position:relative;
+    background:var(--paper);
+  }
+  .quad.patient{border-right:1px dashed var(--line);}
+  .quad.head h4{
+    margin:0 0 12px; font-size:15px; text-transform:uppercase; letter-spacing:1.5px;
+    font-family:-apple-system,'Segoe UI',sans-serif; font-weight:600;
+  }
+  .quad.patient h4{color:var(--terracotta-deep);}
+  .quad.therapist h4{color:var(--sage-deep);}
+  .quad p.line{font-size:15px; margin:0 0 6px;}
+  .quad .impulse-bar{
+    height:8px; border-radius:8px; background:var(--line); margin:14px 0; overflow:hidden; position:relative;
+  }
+  .quad .impulse-fill{
+    position:absolute; left:0; top:0; height:100%; border-radius:8px;
+    background:linear-gradient(90deg, var(--terracotta), var(--terracotta-deep));
+    animation:pulseWidth 3.4s ease-in-out infinite;
+  }
+  .quad .protect-fill{
+    position:absolute; left:0; top:0; height:100%; border-radius:8px;
+    background:linear-gradient(90deg, var(--sage), var(--sage-deep));
+    width:72%;
+  }
+  @keyframes pulseWidth{
+    0%,100%{width:35%;}
+    50%{width:78%;}
+  }
+  .tension-row{
+    grid-column:1 / -1;
+    background:linear-gradient(90deg, rgba(217,119,87,0.08), rgba(127,158,130,0.10));
+    padding:22px 26px;
+    text-align:center;
+    font-family:-apple-system,'Segoe UI',sans-serif;
+  }
+  .tension-row .tlabel{
+    font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--ink-soft); display:block; margin-bottom:8px;
+  }
+  .tension-row .tsentence{
+    font-family:Georgia,serif; font-style:italic; font-size:17px; color:var(--ink);
+  }
+  .resolve-card{
+    margin-top:22px;
+    background: linear-gradient(135deg, #fffaf2, #f3ecf7);
+    border:1px solid var(--lilac);
+    border-radius:16px;
+    padding:22px 26px;
+    box-shadow:var(--shadow);
+  }
+  .resolve-card h4{margin:0 0 8px; color:#5a4a78; font-size:16px;}
+  .resolve-card p{margin:0; font-size:15px;}
+
+  /* ================= SCAMPER ================= */
+  .scamper-track{
+    margin-left:50px;
+    position:relative;
+    padding-left:6px;
+  }
+  .scamper-track::before{
+    content:""; position:absolute; left:19px; top:6px; bottom:6px; width:2px;
+    background:repeating-linear-gradient(to bottom, var(--line) 0 8px, transparent 8px 14px);
+  }
+  .scamper-step{
+    display:grid; grid-template-columns:40px 1fr; gap:18px; margin-bottom:34px; position:relative;
+  }
+  .scamper-step .marker{
+    width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:-apple-system,'Segoe UI',sans-serif; font-weight:700; font-size:13px; color:#fff;
+    z-index:1; box-shadow:0 3px 8px rgba(0,0,0,0.12);
+  }
+  .scamper-step.substitute .marker{background:var(--gold);}
+  .scamper-step.combine .marker{background:var(--terracotta);}
+  .scamper-step.adapt .marker{background:var(--sage-deep);}
+  .scamper-body{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:20px 22px;
+    box-shadow:var(--shadow);
+  }
+  .scamper-body .op-tag{
+    font-family:-apple-system,'Segoe UI',sans-serif; font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--ink-soft); display:block; margin-bottom:6px;
+  }
+  .scamper-body h4{margin:0 0 12px; font-size:17px;}
+
+  /* mood scale visual: emoji chips -> gradient slider */
+  .mood-demo{display:flex; align-items:center; gap:14px; margin:14px 0; flex-wrap:wrap;}
+  .old-scale{display:flex; gap:6px; font-family:-apple-system,'Segoe UI',sans-serif; font-size:13px; color:var(--ink-soft);}
+  .old-scale span{
+    width:26px;height:26px;border-radius:6px;background:var(--cream2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center; font-size:12px;
+  }
+  .arrow-sep{font-size:18px; color:var(--ink-soft);}
+  .emoji-row{display:flex; gap:8px; font-size:22px;}
+  .grad-slider{
+    height:14px; width:180px; border-radius:8px;
+    background:linear-gradient(90deg, #7f9e82, #dba94b, #d97757);
+    position:relative; margin-top:6px;
+  }
+  .grad-slider .thumb{
+    position:absolute; top:-4px; width:22px;height:22px;border-radius:50%;
+    background:#fff; border:3px solid var(--terracotta); box-shadow:0 2px 6px rgba(0,0,0,0.2);
+    animation:slideThumb 4s ease-in-out infinite;
+  }
+  @keyframes slideThumb{
+    0%,100%{left:0%;}
+    50%{left:calc(100% - 22px);}
+  }
+
+  /* combine: overlapping chart */
+  .combo-chart{
+    margin-top:16px; height:120px; position:relative; background:var(--cream2); border-radius:12px; padding:12px 16px 0;
+    overflow:hidden;
+  }
+  .combo-chart svg{width:100%;height:100%;}
+
+  /* adapt: waiting room */
+  .waiting-room{
+    margin-top:14px; display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+  }
+  .countdown-ring{
+    width:76px;height:76px;border-radius:50%;
+    background: conic-gradient(var(--sage-deep) 0deg 250deg, var(--line) 250deg 360deg);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .countdown-ring::after{
+    content:"";position:absolute; width:58px;height:58px;border-radius:50%;background:var(--paper);
+  }
+  .countdown-ring span{
+    position:relative; z-index:1; font-family:-apple-system,'Segoe UI',sans-serif; font-size:13px; font-weight:600; color:var(--ink);
+  }
+  .live-dot{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:-apple-system,'Segoe UI',sans-serif; font-size:13px; color:var(--sage-deep); font-weight:600;
+  }
+  .live-dot .pulse{
+    width:12px;height:12px;border-radius:50%;background:var(--sage-deep);
+    box-shadow:0 0 0 0 rgba(95,127,99,0.6);
+    animation:pulseDot 1.8s infinite;
+  }
+  @keyframes pulseDot{
+    0%{box-shadow:0 0 0 0 rgba(95,127,99,0.55);}
+    70%{box-shadow:0 0 0 10px rgba(95,127,99,0);}
+    100%{box-shadow:0 0 0 0 rgba(95,127,99,0);}
+  }
+
+  /* ================= SYNTHESIS CLIMAX ================= */
+  .climax{
+    margin-top:100px;
+    position:relative;
+    padding:60px 20px 80px;
+    border-radius:32px;
+    background: radial-gradient(circle at 50% 0%, #2f2622 0%, #241d19 55%, #1c1613 100%);
+    color:#f3e9dc;
+    overflow:hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  }
+  .climax::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(217,119,87,0.25) 0, transparent 30%),
+      radial-gradient(circle at 80% 30%, rgba(127,158,130,0.20) 0, transparent 35%),
+      radial-gradient(circle at 50% 90%, rgba(219,169,75,0.18) 0, transparent 40%);
+    animation:driftGlow 12s ease-in-out infinite alternate;
+  }
+  @keyframes driftGlow{
+    0%{opacity:0.7; transform:scale(1);}
+    100%{opacity:1; transform:scale(1.06);}
+  }
+  .climax-head{text-align:center; position:relative; z-index:2; margin-bottom:50px;}
+  .climax-head .kicker{background:rgba(255,255,255,0.08); color:#f0c9b0; border-color:rgba(255,255,255,0.18);}
+  .climax-head h2{font-size:clamp(26px,4vw,38px); margin:14px 0 10px; color:#fff;}
+  .climax-head p{color:#d8c7b6; font-family:-apple-system,'Segoe UI',sans-serif; font-size:14.5px; max-width:520px; margin:0 auto;}
+
+  .constellation{
+    position:relative; z-index:2;
+    max-width:820px; margin:0 auto;
+  }
+  .constellation svg{width:100%; display:block; overflow:visible;}
+  .node-label{
+    font-family:-apple-system,'Segoe UI',sans-serif; font-size:12.5px; fill:#f3e9dc; text-anchor:middle;
+  }
+  .node-sub{
+    font-family:-apple-system,'Segoe UI',sans-serif; font-size:10px; fill:#b9a894; text-anchor:middle;
+  }
+
+  .heart-center{
+    text-align:center; position:relative; z-index:2; margin-top:10px;
+  }
+  .heart-card{
+    display:inline-block; max-width:560px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.16);
+    border-radius:20px;
+    padding:30px 34px;
+    backdrop-filter: blur(2px);
+  }
+  .heart-card .tension-line{
+    font-style:italic; font-size:18px; color:#f6ded1; margin:0 0 16px;
+  }
+  .heart-card .resolve-line{
+    font-family:-apple-system,'Segoe UI',sans-serif; font-size:14.5px; color:#e4d9c9; margin:0;
+  }
+  .heart-card .resolve-line b{color:#a9d0ab;}
+
+  .roadmap-row{
+    position:relative; z-index:2; margin-top:56px;
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+  }
+  .rm-card{
+    flex:1 1 220px; max-width:260px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:16px; padding:20px;
+    font-family:-apple-system,'Segoe UI',sans-serif;
+  }
+  .rm-card .rm-tag{
+    font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color:#f0c9b0; display:block; margin-bottom:8px;
+  }
+  .rm-card h5{margin:0 0 6px; font-size:15px; color:#fff; font-family:Georgia,serif;}
+  .rm-card p{margin:0; font-size:12.5px; color:#cbbaa6; line-height:1.5;}
+  .rm-card.priority{border-color:rgba(217,119,87,0.55); background:rgba(217,119,87,0.14);}
+  .rm-card.priority .rm-tag{color:#ffcaa8;}
+
+  footer{
+    text-align:center; margin-top:60px; font-family:-apple-system,'Segoe UI',sans-serif;
+    font-size:12px; color:var(--ink-soft);
+  }
+  footer .leaf{opacity:0.6;}
+</style>
+</head>
+<body>
+<div class="texture"></div>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="kicker sans">Sessão de Brainstorming</span>
+    <h1 class="title">Um <em>roadmap</em> tecido<br>com cuidado</h1>
+    <p class="subtitle">Próximas features do sistema de psicologia acolhedora — pensadas a duas mãos, entre a psicóloga e sua parceira de criação.</p>
+    <div class="meta-row">
+      <span class="meta-pill">📅 02 de setembro de 2026</span>
+      <span class="meta-pill">🎯 Planejar o roadmap</span>
+      <span class="meta-pill">🤝 Modo Parceria Criativa</span>
+    </div>
+    <div class="breath">
+      <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+        <path d="M0,30 C50,10 100,50 150,30 C200,10 250,50 300,30 C350,10 400,50 450,30 C500,10 550,50 600,30 C650,10 700,50 750,30 C800,10 850,50 900,30 C930,20 970,40 1000,30"
+          fill="none" stroke="#d97757" stroke-width="2" opacity="0.35"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ============ TECHNIQUE 1: JOB TO BE DONE ============ -->
+  <section class="tech" id="jtbd">
+    <div class="tech-head">
+      <span class="tech-num sans">1</span>
+      <h2>Job to Be Done</h2>
+    </div>
+    <p class="tech-desc">Duas portas do mesmo consultório: o que o paciente precisa <em>sentir</em> fora da sessão, e o que a psicóloga precisa <em>ter</em> fora do consultório.</p>
+    <div class="legend">
+      <span><span class="dot user"></span> ideia da psicóloga</span>
+      <span><span class="dot coach"></span> ideia da parceira de criação</span>
+    </div>
+
+    <div class="doors">
+      <div class="door patient">
+        <span class="role-tag sans">O paciente, entre sessões</span>
+        <h3>🚪 A porta de quem espera</h3>
+        <p class="job">"Preciso sentir que alguém está acompanhando meu progresso, mesmo sem sessão marcada."</p>
+        <div class="idea-card">
+          <span class="name">💌 Recadinho assíncrono</span>
+          A psicóloga deixa uma frase curta de presença no portal entre sessões — não é documento, não é sessão formal. Só um sinal de "estou aqui".
+          <span class="attrib coach sans">ideia da parceira de criação</span>
+        </div>
+      </div>
+
+      <div class="door therapist">
+        <span class="role-tag sans">A psicóloga, fora do consultório</span>
+        <h3>🗄️ A porta de quem organiza</h3>
+        <p class="job">"Preciso ter controle: paciente, documentos, relatórios — tudo num só lugar."</p>
+        <div class="idea-card">
+          <span class="name">📄 Relatório de evolução</span>
+          Um botão na ficha do paciente compila sessões, frequência, termômetro emocional e queixa principal num PDF exportável.
+          <span class="attrib coach sans">ideia da parceira de criação</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TECHNIQUE 2: EMPATHY MAP ============ -->
+  <section class="tech" id="empathy">
+    <div class="tech-head">
+      <span class="tech-num sans">2</span>
+      <h2>Mapa de Empatia</h2>
+    </div>
+    <p class="tech-desc">Terça à noite. Duas pessoas, no mesmo instante, sentindo coisas opostas — e sem saber uma da outra.</p>
+    <div class="legend">
+      <span><span class="dot user"></span> ideia da psicóloga</span>
+      <span><span class="dot coach"></span> ideia da parceira de criação</span>
+    </div>
+
+    <div class="empathy-wrap">
+      <div class="clock-scene">🌙 Terça-feira, à noite &nbsp;·&nbsp; mesmo instante, dois lados</div>
+
+      <div class="map-grid">
+        <div class="quad patient">
+          <div class="head"><h4>Paciente sente</h4></div>
+          <p class="line">Ansiedade. Vontade de mandar mensagem.</p>
+          <p class="line">Segura o impulso — fica remoendo sozinho em vez de contatar.</p>
+          <div class="impulse-bar"><div class="impulse-fill"></div></div>
+          <span class="sans" style="font-size:11px;color:var(--ink-soft);">impulso de contato, subindo e descendo</span>
+        </div>
+        <div class="quad therapist">
+          <div class="head"><h4>Psicóloga sente</h4></div>
+          <p class="line">Quer proteger o tempo fora do consultório.</p>
+          <p class="line">O limite é necessário — mas gera uma tensão direta com quem espera do outro lado.</p>
+          <div class="impulse-bar"><div class="protect-fill"></div></div>
+          <span class="sans" style="font-size:11px;color:var(--ink-soft);">necessidade de proteção, estável e firme</span>
+        </div>
+
+        <div class="tension-row">
+          <span class="tlabel">tensão central do mapa</span>
+          <span class="tsentence">Paciente quer alcançar. Psicóloga quer proteger o tempo. As duas coisas são legítimas — e colidem.</span>
+        </div>
+      </div>
+
+      <div class="resolve-card">
+        <h4 class="sans">🕯️ Diário entre sessões — a resolução</h4>
+        <p>Um espaço privado onde o paciente escreve o que sente no momento, sem virar mensagem nem notificação urgente. A psicóloga lê quando quiser. É assíncrono e sem expectativa de resposta imediata — por isso resolve as duas pontas da tensão ao mesmo tempo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TECHNIQUE 3: SCAMPER ============ -->
+  <section class="tech" id="scamper">
+    <div class="tech-head">
+      <span class="tech-num sans">3</span>
+      <h2>SCAMPER</h2>
+    </div>
+    <p class="tech-desc">Três movimentos sobre o termômetro emocional e a sessão: substituir, combinar, adaptar.</p>
+    <div class="legend">
+      <span><span class="dot user"></span> ideia da psicóloga</span>
+      <span><span class="dot coach"></span> ideia da parceira de criação</span>
+    </div>
+
+    <div class="scamper-track">
+
+      <div class="scamper-step substitute">
+        <div class="marker sans">S</div>
+        <div class="scamper-body">
+          <span class="op-tag">Substituir · termômetro emocional</span>
+          <h4>De números frios a cores que sentem</h4>
+          <div class="mood-demo">
+            <div class="old-scale">
+              <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            </div>
+            <span class="arrow-sep">→</span>
+            <div class="emoji-row">😞 😕 😐 🙂 😄</div>
+          </div>
+          <div class="idea-card" style="max-width:520px;">
+            Trocar a escala numérica 1–5 por emojis e cores diferentes por emoção.
+            <span class="attrib user sans">ideia da psicóloga</span>
+          </div>
+          <div class="idea-card" style="max-width:520px;">
+            <span class="grad-slider"><span class="thumb"></span></span>
+            <div style="margin-top:14px;">Slider de cor contínuo — arrasta o dedo e a cor muda gradualmente de verde a cinza a vermelho, em vez de categorizar num emoji fixo.
+            <span class="attrib coach sans">ideia da parceira de criação</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scamper-step combine">
+        <div class="marker sans">C</div>
+        <div class="scamper-body">
+          <span class="op-tag">Combinar · ficha do paciente</span>
+          <h4>Sessões e humor, na mesma linha do tempo</h4>
+          <div class="idea-card" style="max-width:560px;">
+            Sessões + termômetro emocional juntos na ficha do paciente, não em blocos separados.
+            <span class="attrib user sans">ideia da psicóloga</span>
+          </div>
+          <div class="combo-chart">
+            <svg viewBox="0 0 600 110" preserveAspectRatio="none">
+              <polyline points="10,70 70,50 130,60 190,30 250,45 310,25 370,55 430,20 490,40 560,30"
+                fill="none" stroke="#d97757" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="130" y1="10" x2="130" y2="100" stroke="#7f9e82" stroke-width="2" stroke-dasharray="4 4"/>
+              <line x1="310" y1="10" x2="310" y2="100" stroke="#7f9e82" stroke-width="2" stroke-dasharray="4 4"/>
+              <line x1="430" y1="10" x2="430" y2="100" stroke="#7f9e82" stroke-width="2" stroke-dasharray="4 4"/>
+              <circle cx="130" cy="10" r="4" fill="#5f7f63"/>
+              <circle cx="310" cy="10" r="4" fill="#5f7f63"/>
+              <circle cx="430" cy="10" r="4" fill="#5f7f63"/>
+              <text x="130" y="6" font-size="9" fill="#5f7f63" text-anchor="middle" font-family="sans-serif">sessão</text>
+              <text x="310" y="6" font-size="9" fill="#5f7f63" text-anchor="middle" font-family="sans-serif">sessão</text>
+              <text x="430" y="6" font-size="9" fill="#5f7f63" text-anchor="middle" font-family="sans-serif">sessão</text>
+            </svg>
+          </div>
+          <div class="idea-card" style="margin-top:14px;max-width:560px;">
+            Marcadores de data de sessão sobrepostos no gráfico do termômetro, pra ver correlação visual entre sessão e variação de humor.
+            <span class="attrib coach sans">ideia da parceira de criação</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scamper-step adapt">
+        <div class="marker sans">A</div>
+        <div class="scamper-body">
+          <span class="op-tag">Adaptar · de apps de streaming</span>
+          <h4>A sensação de "está acontecendo agora"</h4>
+          <div class="idea-card" style="max-width:560px;">
+            Sessão "ao vivo" com indicador de presença, inspirada em apps de streaming.
+            <span class="attrib user sans">ideia da psicóloga</span>
+          </div>
+          <div class="waiting-room">
+            <div class="countdown-ring"><span>2 min</span></div>
+            <div class="sans" style="font-size:13px;color:var(--ink-soft);">sala de espera virtual</div>
+            <div class="live-dot"><span class="pulse"></span> sessão ao vivo</div>
+          </div>
+          <div class="idea-card" style="margin-top:14px;max-width:560px;">
+            Sala de espera virtual: countdown até a sessão + botão "Iniciar sessão" da psicóloga que acende um indicador ao vivo pro paciente.
+            <span class="attrib coach sans">ideia da parceira de criação</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SYNTHESIS — VISUAL CLIMAX ============ -->
+  <section class="climax">
+    <div class="climax-head">
+      <span class="kicker sans">Síntese final</span>
+      <h2>Onde tudo se encontra</h2>
+      <p>Três técnicas, sete ideias — e um fio que as costura por dentro.</p>
+    </div>
+
+    <div class="constellation">
+      <svg viewBox="0 0 820 420">
+        <!-- connecting lines: three ideas converge into "organização" cluster -->
+        <line x1="150" y1="90"  x2="410" y2="230" stroke="#f0c9b0" stroke-width="1.4" opacity="0.55"/>
+        <line x1="410" y1="90"  x2="410" y2="230" stroke="#f0c9b0" stroke-width="1.4" opacity="0.55"/>
+        <line x1="670" y1="90"  x2="410" y2="230" stroke="#f0c9b0" stroke-width="1.4" opacity="0.55"/>
+        <!-- tension line -->
+        <line x1="150" y1="320" x2="410" y2="230" stroke="#e79f86" stroke-width="1.6" stroke-dasharray="3 5" opacity="0.7"/>
+        <line x1="670" y1="320" x2="410" y2="230" stroke="#a9c9ab" stroke-width="1.6" stroke-dasharray="3 5" opacity="0.7"/>
+        <!-- satellite: UX ideas parked -->
+        <line x1="150" y1="90" x2="80" y2="20" stroke="#8a7863" stroke-width="1" opacity="0.4"/>
+        <line x1="670" y1="90" x2="740" y2="20" stroke="#8a7863" stroke-width="1" opacity="0.4"/>
+        <line x1="410" y1="90" x2="410" y2="20" stroke="#8a7863" stroke-width="1" opacity="0.4"/>
+
+        <!-- three "same need, three formats" nodes -->
+        <circle cx="150" cy="90" r="10" fill="#d97757"/>
+        <text class="node-label" x="150" y="118">Relatório de evolução</text>
+        <text class="node-sub" x="150" y="132">JTBD</text>
+
+        <circle cx="410" cy="90" r="10" fill="#d97757"/>
+        <text class="node-label" x="410" y="118">Ficha combinada</text>
+        <text class="node-sub" x="410" y="132">SCAMPER · Combinar</text>
+
+        <circle cx="670" cy="90" r="10" fill="#d97757"/>
+        <text class="node-label" x="670" y="118">Organização geral</text>
+        <text class="node-sub" x="670" y="132">JTBD</text>
+
+        <!-- center: same need -->
+        <circle cx="410" cy="230" r="26" fill="#f0c9b0" stroke="#fff" stroke-width="2"/>
+        <text x="410" y="226" text-anchor="middle" font-size="11" fill="#3a2f2a" font-family="sans-serif" font-weight="700">MESMA</text>
+        <text x="410" y="240" text-anchor="middle" font-size="11" fill="#3a2f2a" font-family="sans-serif" font-weight="700">NECESSIDADE</text>
+
+        <!-- the two sides of tension -->
+        <circle cx="150" cy="320" r="9" fill="#e79f86"/>
+        <text class="node-label" x="150" y="346">Paciente quer alcançar</text>
+
+        <circle cx="670" cy="320" r="9" fill="#a9c9ab"/>
+        <text class="node-label" x="670" y="346">Psicóloga quer proteger o tempo</text>
+
+        <!-- satellites: parked UX ideas -->
+        <circle cx="80" cy="20" r="6" fill="#8a7863"/>
+        <text class="node-sub" x="80" y="10">Emoji/cor no termômetro</text>
+        <circle cx="740" cy="20" r="6" fill="#8a7863"/>
+        <text class="node-sub" x="740" y="10">Sala de espera virtual</text>
+        <circle cx="410" cy="20" r="6" fill="#8a7863"/>
+        <text class="node-sub" x="410" y="10">Marcadores de sessão no gráfico</text>
+      </svg>
+    </div>
+
+    <div class="heart-center">
+      <div class="heart-card">
+        <p class="tension-line">"Paciente quer alcançar. Psicóloga quer proteger o tempo."</p>
+        <p class="resolve-line">Resolvida pelo <b>Diário entre sessões</b> — o achado mais forte da sessão: assíncrono, sem expectativa de resposta imediata, acolhe os dois lados de uma vez.</p>
+      </div>
+    </div>
+
+    <div class="roadmap-row">
+      <div class="rm-card priority">
+        <span class="rm-tag">Prioridade de roadmap</span>
+        <h5>🕯️ Diário entre sessões</h5>
+        <p>Aprofundar o desenho — é a peça que resolve a tensão central entre presença e limite.</p>
+      </div>
+      <div class="rm-card priority">
+        <span class="rm-tag">Prioridade de roadmap</span>
+        <h5>🗂️ Ficha do paciente reformulada</h5>
+        <p>Unificar relatório de evolução, sessões e termômetro — a mesma necessidade de organização, num só lugar.</p>
+      </div>
+      <div class="rm-card">
+        <span class="rm-tag">Para avaliar depois</span>
+        <h5>🎨 Emoji/cor no termômetro</h5>
+        <p>Ideia de UX a testar quando a ficha combinada estiver madura.</p>
+      </div>
+      <div class="rm-card">
+        <span class="rm-tag">Para avaliar depois</span>
+        <h5>🟢 Sala de espera virtual</h5>
+        <p>Indicador "ao vivo" — bom candidato de UX para uma fase futura.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="leaf">🌿</span> Registrado com carinho pela dupla psicóloga &amp; parceira de criação — 02/09/2026
+  </footer>
+
+</div>
+</body>
+</html>

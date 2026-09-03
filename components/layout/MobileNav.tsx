@@ -2,18 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Users, CalendarDays, FileText } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Painel", icon: LayoutGrid },
-  { href: "/pacientes", label: "Pacientes", icon: Users },
-  { href: "/sessoes", label: "Sessões", icon: CalendarDays },
-  { href: "/documentos", label: "Documentos", icon: FileText },
-];
+import { NAV_ITEMS } from "@/components/layout/navItems";
+import { useSignOut } from "@/lib/useSignOut";
 
 export function MobileNav() {
   const pathname = usePathname();
+  const { handleSignOut, isSigningOut } = useSignOut();
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 flex border-t border-sand-200 bg-white/90 backdrop-blur md:hidden">
@@ -36,6 +32,15 @@ export function MobileNav() {
           </Link>
         );
       })}
+      <button
+        type="button"
+        onClick={handleSignOut}
+        disabled={isSigningOut}
+        className="flex flex-1 flex-col items-center gap-1 py-3 text-[10px] font-medium text-ink-700/40 transition-colors hover:text-dusk-500 disabled:opacity-50"
+      >
+        <LogOut size={20} strokeWidth={1.8} />
+        {isSigningOut ? "..." : "Sair"}
+      </button>
     </nav>
   );
 }

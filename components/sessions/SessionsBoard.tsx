@@ -15,6 +15,7 @@ export function SessionsBoard({
   patients: Patient[];
 }) {
   const [showForm, setShowForm] = useState(false);
+  const phoneByPatientId = new Map(patients.map((p) => [p.id, p.phone]));
 
   return (
     <div className="space-y-4">
@@ -69,7 +70,11 @@ export function SessionsBoard({
       ) : (
         <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white divide-y divide-sand-100">
           {sessions.map((session) => (
-            <SessionRow key={session.id} session={session} />
+            <SessionRow
+              key={session.id}
+              session={session}
+              patientPhone={phoneByPatientId.get(session.patient_id)}
+            />
           ))}
         </div>
       )}

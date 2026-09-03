@@ -12,6 +12,7 @@ import {
   MapPin,
   ExternalLink,
   CalendarDays,
+  Gauge,
 } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
@@ -23,8 +24,14 @@ import {
   sessionStatusLabel,
   sessionStatusTone,
 } from "@/components/ui/Badge";
+import { MoodHistoryChart } from "@/components/portal/MoodHistoryChart";
+import { DeletePatientButton } from "@/components/patients/DeletePatientButton";
 import { formatCurrency, formatDate, initials } from "@/lib/utils";
-import type { Patient, PatientDocument, Session } from "@/lib/types";
+import type { MoodCheckin, Patient, PatientDocument, Session } from "@/lib/types";
+
+// Duplicated from EmotionalThermometer's MOOD_LEVELS on purpose: indexing into a
+// value imported from a "use client" module throws in this server component.
+const MOOD_LABELS = ["Muito difícil", "Baixo", "Neutro", "Bem", "Muito bem"];
 
 const avatarGradient: Record<string, string> = {
   active: "from-sage-200 to-mist-200 text-sage-800",
@@ -51,10 +58,11 @@ export default async function PatientDetailPage({
 }) {
   const { userId } = await auth();
 
-  const [patientRows, sessionRows, documentRows] = await Promise.all([
+  const [patientRows, sessionRows, documentRows, moodRows] = await Promise.all([
     sql`SELECT * FROM patients WHERE id = ${params.id} AND created_by = ${userId} LIMIT 1`,
     sql`SELECT * FROM sessions WHERE patient_id = ${params.id} ORDER BY date DESC LIMIT 10`,
     sql`SELECT * FROM documents WHERE patient_id = ${params.id} ORDER BY created_at DESC`,
+    sql`SELECT * FROM mood_checkins WHERE patient_id = ${params.id} ORDER BY created_at DESC LIMIT 30`,
   ]);
 
   if (!patientRows[0]) notFound();
@@ -62,6 +70,8 @@ export default async function PatientDetailPage({
   const p = patientRows[0] as Patient;
   const sessionList = sessionRows as Session[];
   const documentList = documentRows as PatientDocument[];
+  const moodList = moodRows as MoodCheckin[];
+  const latestMood = moodList[0];
 
   const gradient = avatarGradient[p.status] ?? avatarGradient.active;
   const totalSessions = sessionList.length;
@@ -150,13 +160,16 @@ export default async function PatientDetailPage({
               </div>
             </div>
 
-            {/* Editar */}
-            <Link
-              href={`/pacientes/${p.id}/editar`}
-              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-sand-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 shadow-sm transition-all hover:border-sage-300 hover:text-sage-700"
-            >
-              <Pencil size={14} /> Editar
-            </Link>
+            {/* Editar / Excluir */}
+            <div className="flex shrink-0 items-center gap-2">
+              <Link
+                href={`/pacientes/${p.id}/editar`}
+                className="inline-flex items-center gap-2 rounded-full border border-sand-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 shadow-sm transition-all hover:border-sage-300 hover:text-sage-700"
+              >
+                <Pencil size={14} /> Editar
+              </Link>
+              <DeletePatientButton patient={p} />
+            </div>
           </div>
 
           {/* Stats rápidas */}
@@ -321,6 +334,36 @@ export default async function PatientDetailPage({
             )}
           </section>
         </div>
+
+        {/* Termômetro emocional */}
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 font-display text-sm font-semibold text-ink-800">
+              <Gauge size={15} className="text-ink-700/40" /> Termômetro emocional
+            </h2>
+            {latestMood && (
+              <span className="text-xs font-medium text-ink-700/50">
+                Último registro: {MOOD_LABELS[latestMood.mood - 1] ?? "—"} ·{" "}
+                {formatDate(latestMood.created_at.slice(0, 10))}
+              </span>
+            )}
+          </div>
+
+          {moodList.length === 0 ? (
+            <div className="flex items-center justify-center rounded-2xl border border-dashed border-sand-300 bg-white py-10 text-sm text-ink-700/40">
+              Nenhum check-in emocional registrado
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-sand-200 bg-white p-5">
+              <MoodHistoryChart checkins={moodList} />
+              {latestMood?.note && (
+                <p className="mt-4 rounded-xl bg-sand-50 p-3 text-sm italic text-ink-700/70">
+                  “{latestMood.note}”
+                </p>
+              )}
+            </div>
+          )}
+        </section>
       </main>
     </>
   );

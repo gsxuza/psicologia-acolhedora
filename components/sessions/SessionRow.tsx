@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { Video, MapPin } from "lucide-react";
+import { Video, MapPin, MessageCircle, Check } from "lucide-react";
 import { toast } from "sonner";
-import { updateSessionField } from "@/app/actions/sessions";
-import { formatCurrency, formatDate, initials } from "@/lib/utils";
+import { updateSessionField, markReminderSent } from "@/app/actions/sessions";
+import { buildWhatsAppLink, formatCurrency, formatDate, initials } from "@/lib/utils";
 import type { PaymentStatus, Session, SessionStatus } from "@/lib/types";
 
 const STATUS_OPTIONS: { value: SessionStatus; label: string }[] = [
@@ -36,7 +36,13 @@ const paymentColor: Record<PaymentStatus, string> = {
   waived: "bg-mist-50 text-mist-600",
 };
 
-export function SessionRow({ session }: { session: Session }) {
+export function SessionRow({
+  session,
+  patientPhone,
+}: {
+  session: Session;
+  patientPhone?: string | null;
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -47,6 +53,30 @@ export function SessionRow({ session }: { session: Session }) {
       toast.success(field === "status" ? "Status atualizado" : "Pagamento atualizado");
     });
   }
+
+  const patientPhoneDigits = patientPhone?.replace(/\D/g, "") ?? "";
+
+  function handleReminderClick() {
+    if (isPending || !patientPhone || !patientPhoneDigits) return;
+    const firstName = session.patient_name.split(" ")[0];
+    const message = `Olá, ${firstName}! Passando para lembrar da nossa sessão em ${formatDate(session.date)} às ${session.time}. Até breve!`;
+    window.open(buildWhatsAppLink(patientPhone, message), "_blank", "noopener,noreferrer");
+    if (!session.reminder_sent) {
+      startTransition(async () => {
+        try {
+          await markReminderSent(session.id);
+          router.refresh();
+          toast.success("Lembrete marcado como enviado");
+        } catch {
+          toast.error("Não foi possível marcar o lembrete como enviado");
+        }
+      });
+    }
+  }
+
+  const showReminder =
+    (session.status === "scheduled" || session.status === "confirmed") &&
+    !!patientPhoneDigits;
 
   const dateLabel = formatDate(session.date);
 
@@ -108,6 +138,32 @@ export function SessionRow({ session }: { session: Session }) {
           <span className="min-w-[72px] text-right text-xs font-semibold text-ink-700/60">
             {formatCurrency(session.payment_value)}
           </span>
+        )}
+
+        {showReminder && (
+          <button
+            type="button"
+            onClick={handleReminderClick}
+            disabled={isPending}
+            aria-label={
+              session.reminder_sent
+                ? "Lembrete já enviado — clique para reenviar"
+                : "Enviar lembrete por WhatsApp"
+            }
+            title={
+              session.reminder_sent
+                ? "Lembrete já enviado — clique para reenviar"
+                : "Enviar lembrete por WhatsApp"
+            }
+            className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+              session.reminder_sent
+                ? "bg-sage-50 text-sage-600 hover:bg-sage-100"
+                : "bg-mist-50 text-mist-700 hover:bg-mist-100"
+            }`}
+          >
+            {session.reminder_sent ? <Check size={12} /> : <MessageCircle size={12} />}
+            {session.reminder_sent ? "Enviado" : "Lembrar"}
+          </button>
         )}
       </div>
     </div>
