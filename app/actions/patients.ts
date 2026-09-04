@@ -3,11 +3,25 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
+import { isValidCpf, onlyCpfDigits } from "@/lib/cpf";
 
 function normalizeCpf(cpf: string | undefined) {
   if (!cpf) return null;
-  const digits = cpf.replace(/\D/g, "");
-  return digits || null;
+  const digits = onlyCpfDigits(cpf);
+  if (!digits) return null;
+  if (!isValidCpf(digits)) throw new Error("CPF inválido");
+  return digits;
+}
+
+async function assertCpfNotTaken(userId: string, cpf: string | null, excludeId?: string) {
+  if (!cpf) return;
+  const rows = await sql`
+    SELECT id FROM patients
+    WHERE created_by = ${userId} AND cpf = ${cpf}
+      AND (${excludeId ?? null}::uuid IS NULL OR id != ${excludeId ?? null}::uuid)
+    LIMIT 1
+  `;
+  if (rows[0]) throw new Error("Já existe um paciente com este CPF");
 }
 
 export type PatientPayload = {
@@ -27,6 +41,9 @@ export async function createPatient(data: PatientPayload) {
   const { userId } = await auth();
   if (!userId) throw new Error("Not authenticated");
 
+  const cpf = normalizeCpf(data.cpf);
+  await assertCpfNotTaken(userId, cpf);
+
   const rows = await sql`
     INSERT INTO patients (
       full_name, email, phone, cpf, birth_date, status,
@@ -35,7 +52,7 @@ export async function createPatient(data: PatientPayload) {
       ${data.full_name},
       ${data.email || null},
       ${data.phone || null},
-      ${normalizeCpf(data.cpf)},
+      ${cpf},
       ${data.birth_date || null},
       ${data.status},
       ${data.main_complaint || null},
@@ -54,12 +71,15 @@ export async function updatePatient(id: string, data: PatientPayload) {
   const { userId } = await auth();
   if (!userId) throw new Error("Not authenticated");
 
+  const cpf = normalizeCpf(data.cpf);
+  await assertCpfNotTaken(userId, cpf, id);
+
   const rows = await sql`
     UPDATE patients SET
       full_name = ${data.full_name},
       email = ${data.email || null},
       phone = ${data.phone || null},
-      cpf = ${normalizeCpf(data.cpf)},
+      cpf = ${cpf},
       birth_date = ${data.birth_date || null},
       status = ${data.status},
       main_complaint = ${data.main_complaint || null},
