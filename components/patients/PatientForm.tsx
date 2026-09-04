@@ -10,13 +10,17 @@ import { toast } from "sonner";
 import { Input, Select, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { createPatient, updatePatient } from "@/app/actions/patients";
+import { isValidCpf } from "@/lib/cpf";
 import type { Patient } from "@/lib/types";
 
 const patientSchema = z.object({
   full_name: z.string().min(2, "Informe o nome completo"),
   email: z.string().email("E-mail inválido").or(z.literal("")).optional(),
   phone: z.string().optional(),
-  cpf: z.string().optional(),
+  cpf: z
+    .string()
+    .optional()
+    .refine((v) => !v || isValidCpf(v), "CPF inválido"),
   birth_date: z.string().optional(),
   status: z.enum(["active", "inactive", "waiting"]),
   main_complaint: z.string().optional(),
@@ -85,10 +89,12 @@ export function PatientForm({ patient }: { patient?: Patient }) {
           toast.success("Paciente cadastrado com sucesso");
           router.push("/pacientes");
         }
-      } catch {
-        setServerError(
-          "Não foi possível salvar. Verifique os dados e tente novamente."
-        );
+      } catch (err) {
+        const message =
+          err instanceof Error && err.message
+            ? err.message
+            : "Não foi possível salvar. Verifique os dados e tente novamente.";
+        setServerError(message);
       }
     });
   }

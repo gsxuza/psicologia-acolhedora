@@ -42,6 +42,7 @@ export default async function PortalMateriaisPage() {
   const documentRows = await sql`
     SELECT * FROM documents
     WHERE is_public = true
+      AND created_by = ${p.created_by}
       AND (patient_id = ${p.id} OR patient_id IS NULL)
     ORDER BY category, created_at DESC
   `;
