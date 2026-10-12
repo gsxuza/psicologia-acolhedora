@@ -1,6 +1,6 @@
+import Image from "next/image";
 import { Instagram, MessageCircle, Mail, ArrowUpRight } from "lucide-react";
 import { BRAND, whatsappLink } from "@/lib/config";
-import { BrandMark } from "@/components/landing/LandingHeader";
 
 export function LandingFooter() {
   return (
@@ -9,14 +9,13 @@ export function LandingFooter() {
         <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2.5">
-              <div className="rounded-xl bg-white/10 p-1.5">
-                <BrandMark size={28} />
-              </div>
-              <span className="font-display text-base font-semibold text-white">
-                {BRAND.name}
-              </span>
-            </div>
+            <Image
+              src="/brand/gabriela-silva-wordmark-light.png"
+              alt={BRAND.name}
+              width={700}
+              height={287}
+              className="h-6 w-auto"
+            />
             <p className="mt-3 text-sm text-white/40">
               {BRAND.role} · {BRAND.crp}
             </p>

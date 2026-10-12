@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -35,11 +36,15 @@ export function LandingHeader() {
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <BrandMark />
-          <span className="font-display text-base font-semibold text-ink-800">
-            Gabriela<span className="font-normal text-sage-600">Silva</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/brand/gabriela-silva-wordmark-dark.png"
+            alt="Gabriela Silva"
+            width={690}
+            height={279}
+            priority
+            className="h-7 w-auto"
+          />
         </Link>
 
         {/* Nav desktop */}
