@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Antonio, Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ptBR } from "@clerk/localizations";
+import { clerkAppearance } from "@/lib/clerk-appearance";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// Antonio: sans condensada, alta e geométrica — ecoa as proporções
+// da logo (GABRIELA SILVA) em vez da serifa suave anterior (Fraunces).
+const antonio = Antonio({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["500", "600"],
-  style: ["normal", "italic"],
+  variable: "--font-display",
+  weight: ["500", "600", "700"],
 });
 
 const inter = Inter({
@@ -23,8 +26,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="pt-BR" className={`${fraunces.variable} ${inter.variable}`}>
+    <ClerkProvider localization={ptBR} appearance={clerkAppearance}>
+      <html lang="pt-BR" className={`${antonio.variable} ${inter.variable}`}>
         <body className="font-sans">{children}</body>
       </html>
     </ClerkProvider>

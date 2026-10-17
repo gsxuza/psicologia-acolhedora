@@ -14,7 +14,7 @@ export function ThermometerTeaserSection() {
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <h2 className="font-display text-3xl font-semibold text-ink-800">
+          <h2 className="font-display text-3xl font-bold tracking-wide text-ink-800">
             Termômetro emocional
           </h2>
           <p className="mx-auto mt-3 max-w-md text-ink-700/70">
