@@ -1,9 +1,26 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
 import { isValidCpf, onlyCpfDigits } from "@/lib/cpf";
+
+// Convida o paciente a criar login no /portal. Não bloqueia o cadastro do
+// paciente se o convite falhar (ex.: e-mail já tem conta, já foi convidado) —
+// isso é best-effort, a psicóloga pode reenviar manualmente pelo Clerk depois.
+async function inviteToPortal(email: string) {
+  try {
+    const client = await clerkClient();
+    await client.invitations.createInvitation({
+      emailAddress: email,
+      redirectUrl: "/portal",
+      notify: true,
+      ignoreExisting: true,
+    });
+  } catch (err) {
+    console.error("Falha ao convidar paciente para o portal:", err);
+  }
+}
 
 function normalizeCpf(cpf: string | undefined) {
   if (!cpf) return null;
@@ -64,6 +81,8 @@ export async function createPatient(data: PatientPayload) {
     RETURNING id
   `;
 
+  if (data.email) await inviteToPortal(data.email);
+
   redirect(`/pacientes/${rows[0].id}`);
 }
 
@@ -88,10 +107,12 @@ export async function updatePatient(id: string, data: PatientPayload) {
       notes = ${data.notes || null},
       updated_at = now()
     WHERE id = ${id} AND created_by = ${userId}
-    RETURNING id
+    RETURNING id, user_id
   `;
 
   if (!rows[0]) throw new Error("Patient not found");
+  if (data.email && !rows[0].user_id) await inviteToPortal(data.email);
+
   redirect(`/pacientes/${rows[0].id}`);
 }
 
