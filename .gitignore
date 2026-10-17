@@ -11,3 +11,4 @@ npm-debug.log*
 .claude/
 screenshot.js
 screenshot2.js
+*.tsbuildinfo
