@@ -105,7 +105,7 @@ export function SpecialtiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: 0.08 }}
-              className="font-display text-4xl font-semibold text-ink-800"
+              className="font-display text-4xl font-bold tracking-wide text-ink-800"
             >
               Áreas de atuação
             </motion.h2>

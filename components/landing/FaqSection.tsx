@@ -37,7 +37,7 @@ export function FaqSection() {
           {/* Lado esquerdo — título fixo */}
           <div className="lg:sticky lg:top-32 lg:self-start">
             <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sage-600">FAQ</p>
-            <h2 className="font-display text-4xl font-semibold leading-tight text-ink-800">
+            <h2 className="font-display text-4xl font-bold leading-tight tracking-wide text-ink-800">
               Perguntas<br />frequentes
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-ink-700/55">

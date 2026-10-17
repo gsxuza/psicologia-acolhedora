@@ -80,7 +80,7 @@ export function SupportQuiz() {
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-sage-600">
             Não sabe por onde começar?
           </p>
-          <h2 className="font-display text-3xl font-semibold text-ink-800">
+          <h2 className="font-display text-3xl font-bold tracking-wide text-ink-800">
             Responda 3 perguntas rápidas
           </h2>
           <p className="mx-auto mt-3 max-w-md text-ink-700/70">

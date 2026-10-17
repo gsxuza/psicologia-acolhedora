@@ -66,7 +66,7 @@ export function AboutSection() {
             <div className="pointer-events-none absolute -bottom-12 -left-12 h-40 w-40 rounded-full bg-white/5" />
 
             <Quote className="mb-6 text-white/25" size={52} />
-            <p className="relative font-display text-2xl font-semibold leading-snug sm:text-3xl">
+            <p className="relative font-display text-2xl font-bold leading-snug tracking-wide sm:text-3xl">
               A terapia é um encontro — um lugar para desacelerar, se ouvir e reorganizar aquilo que pesa.
             </p>
             <p className="relative mt-4 text-base font-normal leading-relaxed text-white/70">
