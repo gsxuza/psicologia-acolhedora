@@ -61,13 +61,11 @@ export function LandingHeader() {
         </nav>
 
         {/* Ações */}
+        {/* Botão "Entrar" removido temporariamente da navegação pública —
+            o login de produção está quebrado (depende de um domínio próprio
+            verificado no Clerk, que ainda não existe). Reativar este link
+            assim que isso for resolvido; a rota /login em si não foi tocada. */}
         <div className="flex items-center gap-3">
-          <Link
-            href="/login"
-            className="hidden rounded-full border border-sand-300 bg-white px-5 py-2 text-sm font-medium text-ink-800 shadow-sm transition-all hover:border-sage-300 hover:shadow-md sm:inline-flex"
-          >
-            Entrar
-          </Link>
           <button
             className="rounded-xl p-2 text-ink-700/60 hover:bg-sand-200 md:hidden"
             onClick={() => setOpen((v) => !v)}
@@ -126,20 +124,6 @@ export function LandingHeader() {
                   {item.label}
                 </motion.a>
               ))}
-              <motion.div
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: NAV.length * 0.05, duration: 0.2 }}
-                className="mt-2 pt-2 border-t border-sand-200"
-              >
-                <Link
-                  href="/login"
-                  className="block rounded-xl bg-sage-600 px-4 py-3 text-center text-sm font-semibold text-white"
-                  onClick={() => setOpen(false)}
-                >
-                  Entrar
-                </Link>
-              </motion.div>
             </nav>
           </motion.div>
         )}
